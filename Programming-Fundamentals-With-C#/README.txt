@@ -1,1 +1,1 @@
-This repo holds code from Programming Fundamentals with C# course.
+This folder holds code from Programming Fundamentals with C# course.
