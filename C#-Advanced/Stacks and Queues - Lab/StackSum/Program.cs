@@ -8,17 +8,12 @@ namespace StackSum
     {
         static void Main(string[] args)
         {
-            Stack<int> intStack = new Stack<int>();
-
             int[] numbers = Console.ReadLine()
-                .Split(" ",StringSplitOptions.RemoveEmptyEntries)
-                .Select(int.Parse)
-                .ToArray();
+             .Split(" ", StringSplitOptions.RemoveEmptyEntries)
+             .Select(int.Parse)
+             .ToArray();
 
-            for (int i = 0; i < numbers.Length; i++)
-            {
-                intStack.Push(numbers[i]);
-            }
+            Stack<int> intStack = new Stack<int>(numbers);
 
             string[] command = Console.ReadLine()
                 .Split(" ", StringSplitOptions.RemoveEmptyEntries);
