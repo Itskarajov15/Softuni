@@ -1,0 +1,1 @@
+This folder holds my projects and homework, created during C# Advanced course.
