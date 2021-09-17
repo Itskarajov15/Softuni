@@ -6,7 +6,7 @@ namespace CarManufacturer
     {
         static void Main(string[] args)
         {
-            Car car = new Car("Mercedes", "S class", 2021, 200, 10);
+            Console.WriteLine("Hello World!");
         }
     }
 }
