@@ -1,0 +1,31 @@
+﻿
+Microsoft Visual Studio Solution File, Format Version 12.00
+# Visual Studio Version 16
+VisualStudioVersion = 16.0.31702.278
+MinimumVisualStudioVersion = 10.0.40219.1
+Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "03. CocktailParty", "03. CocktailParty\03. CocktailParty.csproj", "{F9704B68-4FDF-40DD-9D61-C5322472418F}"
+EndProject
+Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "01.WarmWinter", "01.WarmWinter\01.WarmWinter.csproj", "{E0D07ACD-FBDD-49EF-98F3-B96B3745D731}"
+EndProject
+Global
+	GlobalSection(SolutionConfigurationPlatforms) = preSolution
+		Debug|Any CPU = Debug|Any CPU
+		Release|Any CPU = Release|Any CPU
+	EndGlobalSection
+	GlobalSection(ProjectConfigurationPlatforms) = postSolution
+		{F9704B68-4FDF-40DD-9D61-C5322472418F}.Debug|Any CPU.ActiveCfg = Debug|Any CPU
+		{F9704B68-4FDF-40DD-9D61-C5322472418F}.Debug|Any CPU.Build.0 = Debug|Any CPU
+		{F9704B68-4FDF-40DD-9D61-C5322472418F}.Release|Any CPU.ActiveCfg = Release|Any CPU
+		{F9704B68-4FDF-40DD-9D61-C5322472418F}.Release|Any CPU.Build.0 = Release|Any CPU
+		{E0D07ACD-FBDD-49EF-98F3-B96B3745D731}.Debug|Any CPU.ActiveCfg = Debug|Any CPU
+		{E0D07ACD-FBDD-49EF-98F3-B96B3745D731}.Debug|Any CPU.Build.0 = Debug|Any CPU
+		{E0D07ACD-FBDD-49EF-98F3-B96B3745D731}.Release|Any CPU.ActiveCfg = Release|Any CPU
+		{E0D07ACD-FBDD-49EF-98F3-B96B3745D731}.Release|Any CPU.Build.0 = Release|Any CPU
+	EndGlobalSection
+	GlobalSection(SolutionProperties) = preSolution
+		HideSolutionNode = FALSE
+	EndGlobalSection
+	GlobalSection(ExtensibilityGlobals) = postSolution
+		SolutionGuid = {AEDDEF7B-B515-4E2A-AAF3-45716BE7AE40}
+	EndGlobalSection
+EndGlobal
