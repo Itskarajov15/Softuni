@@ -6,6 +6,7 @@ namespace LinkedList
 {
     class SoftuniLinkedList
     {
+        private bool reversed = false;
         public Node Head { get; set; }
         public Node Tail { get; set; }
         public int Count { get; private set; }
@@ -99,7 +100,15 @@ namespace LinkedList
             while (currNode != null)
             {
                 action(currNode.Value);
-                currNode = currNode.Next;
+
+                if (reversed)
+                {
+                    currNode = currNode.Previous;
+                }
+                else
+                {
+                    currNode = currNode.Next;
+                }
             }
         }
 
@@ -118,6 +127,15 @@ namespace LinkedList
             }
 
             return array;
+        }
+
+        public void Reverse()
+        {
+            var temp = Head;
+            Head = Tail;
+            Tail = temp;
+
+            reversed = !reversed;
         }
     }
 }

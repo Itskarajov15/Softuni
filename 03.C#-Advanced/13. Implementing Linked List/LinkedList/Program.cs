@@ -23,6 +23,11 @@ namespace LinkedList
             Console.WriteLine($"Remove first element: {linkedList.RemoveFirst()}");
             Console.WriteLine($"Remove last element: {linkedList.RemoveLast()}");
 
+            //linkedList.Foreach(x => Console.WriteLine(x));
+
+            linkedList.Reverse();
+            linkedList.Reverse();
+
             linkedList.Foreach(x => Console.WriteLine(x));
         }
     }
