@@ -6,16 +6,18 @@ namespace ImplementingList
     {
         static void Main(string[] args)
         {
-            var numbers = new CustomList();
+            var stack = new CustomStack();
 
-            for (int i = 1; i <= 3; i++)
-            {
-                numbers.Add(i);
-            }
+            stack.Push(100);
+            stack.Push(200);
+            stack.Push(300);
+            stack.Push(400);
+            stack.Push(500);
 
-            numbers.InsertAt(0, 100);
-            numbers.InsertAt(1, 200);
-            numbers.InsertAt(5, 500);
+            stack.Pop();
+            stack.Pop();
+
+            Console.WriteLine($"{stack.Pop()}, {stack.Peek()}");
         }
     }
 }

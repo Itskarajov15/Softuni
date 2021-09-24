@@ -96,10 +96,8 @@ namespace ImplementingList
 
         public void Swap(int firstIndex, int secondIndex)
         {
-            if (firstIndex >= this.Count && secondIndex >= this.Count)
-            {
-                throw new ArgumentOutOfRangeException();
-            }
+            ValidateIndex(firstIndex);
+            ValidateIndex(secondIndex);
 
             var temp = this.items[firstIndex];
             this.items[firstIndex] = this.items[secondIndex];
