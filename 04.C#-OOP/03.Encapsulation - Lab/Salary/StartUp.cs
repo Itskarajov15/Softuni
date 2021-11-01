@@ -1,5 +1,6 @@
 ﻿using System;
 using System.Collections.Generic;
+using System.Linq;
 
 namespace PersonsInfo
 {
@@ -7,23 +8,22 @@ namespace PersonsInfo
     {
         static void Main(string[] args)
         {
-            var persons = new List<Person>();
+            var people = new List<Person>();
 
-            var lines = int.Parse(Console.ReadLine());
+            int n = int.Parse(Console.ReadLine());
 
-            for (int i = 0; i < lines; i++)
+            for (int i = 0; i < n; i++)
             {
-                var cmdArgs = Console.ReadLine()
-                    .Split();
+                var personData = Console.ReadLine()
+                    .Split(" ", StringSplitOptions.RemoveEmptyEntries);
 
-                var person = new Person(cmdArgs[0], cmdArgs[1], int.Parse(cmdArgs[2]), decimal.Parse(cmdArgs[3]));
-                persons.Add(person);
+                people.Add(new Person(personData[0], personData[1], int.Parse(personData[2]), decimal.Parse(personData[3])));
             }
 
             var percentage = decimal.Parse(Console.ReadLine());
 
-            persons.ForEach(p => p.IncreaseSalary(percentage));
-            persons.ForEach(p => Console.WriteLine(p));
+            people.ForEach(p => p.IncreaseSalary(percentage));
+            people.ForEach(p => Console.WriteLine(p));
         }
     }
 }

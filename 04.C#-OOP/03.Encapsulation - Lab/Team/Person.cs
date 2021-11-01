@@ -40,7 +40,7 @@ namespace PersonsInfo
             get
             {
                 return this.LastName;
-            } 
+            }
             private set
             {
                 if (value.Length < 3)

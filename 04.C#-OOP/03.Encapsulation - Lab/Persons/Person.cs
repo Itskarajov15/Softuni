@@ -19,7 +19,11 @@ namespace PersonsInfo
 
         public override string ToString()
         {
-            return $"{this.FirstName} {this.LastName} is {this.Age} years old.";
+            var sb = new StringBuilder();
+
+            sb.AppendLine($"{this.FirstName} {this.LastName} is {this.Age} years old.");
+
+            return sb.ToString().TrimEnd();
         }
     }
 }

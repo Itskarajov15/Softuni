@@ -19,24 +19,19 @@ namespace PersonsInfo
         public int Age { get; private set; }
         public decimal Salary { get; private set; }
 
-        public void IncreaseSalary(decimal percentage)
-        {
-            if (IsYoungerThanThirty(this.Age))
-            {
-                percentage /= 2;
-            }
-
-            this.Salary += (this.Salary * (percentage / 100M));
-        }
-
         public override string ToString()
         {
             return $"{this.FirstName} {this.LastName} receives {this.Salary:f2} leva.";
         }
 
-        private bool IsYoungerThanThirty(int age)
+        public void IncreaseSalary(decimal percentage)
         {
-            return this.Age < 30;
+            if (this.Age < 30)
+            {
+                percentage /= 2;
+            }
+
+            this.Salary += this.Salary * (percentage / 100);
         }
     }
 }

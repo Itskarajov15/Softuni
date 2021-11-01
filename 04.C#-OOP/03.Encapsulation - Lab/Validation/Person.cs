@@ -21,10 +21,7 @@ namespace PersonsInfo
 
         public string FirstName
         {
-            get
-            {
-                return this.FirstName;
-            }
+            get => this.firstName;
             private set
             {
                 if (value.Length < 3)
@@ -37,10 +34,7 @@ namespace PersonsInfo
         }
         public string LastName
         {
-            get
-            {
-                return this.LastName;
-            } 
+            get => this.lastName;
             private set
             {
                 if (value.Length < 3)
@@ -51,13 +45,9 @@ namespace PersonsInfo
                 this.lastName = value;
             }
         }
-
         public int Age
         {
-            get
-            {
-                return this.Age;
-            }
+            get => this.age;
             private set
             {
                 if (value <= 0)
@@ -70,29 +60,16 @@ namespace PersonsInfo
         }
         public decimal Salary
         {
-            get
-            {
-                return this.Salary;
-            }
+            get => this.salary;
             private set
             {
-                if (value < 460)
+                if (value < 650)
                 {
-                    throw new ArgumentException("Salary cannot be less than 460 leva!");
+                    throw new ArgumentException("Salary cannot be less than 650 leva!");
                 }
 
                 this.salary = value;
             }
-        }
-
-        public void IncreaseSalary(decimal percentage)
-        {
-            if (IsYoungerThanThirty(this.Age))
-            {
-                percentage /= 2;
-            }
-
-            this.Salary += (this.Salary * (percentage / 100M));
         }
 
         public override string ToString()
@@ -100,9 +77,14 @@ namespace PersonsInfo
             return $"{this.FirstName} {this.LastName} receives {this.Salary:f2} leva.";
         }
 
-        private bool IsYoungerThanThirty(int age)
+        public void IncreaseSalary(decimal percentage)
         {
-            return this.Age < 30;
+            if (this.Age < 30)
+            {
+                percentage /= 2;
+            }
+
+            this.Salary += this.Salary * (percentage / 100);
         }
     }
 }
