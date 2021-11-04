@@ -4,7 +4,7 @@ using System.Text;
 
 namespace Telephony
 {
-    public interface IStationaryPhone
+    public interface ICallable
     {
         void Call(string number);
     }

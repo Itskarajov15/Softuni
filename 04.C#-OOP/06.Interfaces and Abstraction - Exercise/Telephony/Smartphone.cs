@@ -4,7 +4,7 @@ using System.Text;
 
 namespace Telephony
 {
-    public class Smartphone : ISmartphone, IStationaryPhone
+    public class Smartphone : IBrowsable, ICallable
     {
         public void Browse(string url)
         {
