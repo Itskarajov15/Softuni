@@ -13,7 +13,13 @@ Project("{9A19103F-16F7-4668-BE54-9A1E7A4F7556}") = "BorderControl", "BorderCont
 EndProject
 Project("{9A19103F-16F7-4668-BE54-9A1E7A4F7556}") = "BirthdayCelebrations", "BirthdayCelebrations\BirthdayCelebrations.csproj", "{B357D5D0-56E2-4DA0-847B-DC6D7EB30B3F}"
 EndProject
-Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "MilitaryElite", "MilitaryElite\MilitaryElite.csproj", "{922BBE49-72FD-4812-9C44-A4281E263FAC}"
+Project("{9A19103F-16F7-4668-BE54-9A1E7A4F7556}") = "MilitaryElite", "MilitaryElite\MilitaryElite.csproj", "{922BBE49-72FD-4812-9C44-A4281E263FAC}"
+EndProject
+Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "CollectionHierarchy", "CollectionHierarchy\CollectionHierarchy.csproj", "{46A223AC-D2D4-4128-8431-823002B390E5}"
+EndProject
+Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "ExplicitInterfaces", "ExplicitInterfaces\ExplicitInterfaces.csproj", "{B414C9D1-F3CB-4F0C-9921-3EC0C046BDCB}"
+EndProject
+Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "FoodShortage", "FoodShortage\FoodShortage.csproj", "{2574F2C6-DDA5-42D2-BADE-56E7327924E3}"
 EndProject
 Global
 	GlobalSection(SolutionConfigurationPlatforms) = preSolution
@@ -45,6 +51,18 @@ Global
 		{922BBE49-72FD-4812-9C44-A4281E263FAC}.Debug|Any CPU.Build.0 = Debug|Any CPU
 		{922BBE49-72FD-4812-9C44-A4281E263FAC}.Release|Any CPU.ActiveCfg = Release|Any CPU
 		{922BBE49-72FD-4812-9C44-A4281E263FAC}.Release|Any CPU.Build.0 = Release|Any CPU
+		{46A223AC-D2D4-4128-8431-823002B390E5}.Debug|Any CPU.ActiveCfg = Debug|Any CPU
+		{46A223AC-D2D4-4128-8431-823002B390E5}.Debug|Any CPU.Build.0 = Debug|Any CPU
+		{46A223AC-D2D4-4128-8431-823002B390E5}.Release|Any CPU.ActiveCfg = Release|Any CPU
+		{46A223AC-D2D4-4128-8431-823002B390E5}.Release|Any CPU.Build.0 = Release|Any CPU
+		{B414C9D1-F3CB-4F0C-9921-3EC0C046BDCB}.Debug|Any CPU.ActiveCfg = Debug|Any CPU
+		{B414C9D1-F3CB-4F0C-9921-3EC0C046BDCB}.Debug|Any CPU.Build.0 = Debug|Any CPU
+		{B414C9D1-F3CB-4F0C-9921-3EC0C046BDCB}.Release|Any CPU.ActiveCfg = Release|Any CPU
+		{B414C9D1-F3CB-4F0C-9921-3EC0C046BDCB}.Release|Any CPU.Build.0 = Release|Any CPU
+		{2574F2C6-DDA5-42D2-BADE-56E7327924E3}.Debug|Any CPU.ActiveCfg = Debug|Any CPU
+		{2574F2C6-DDA5-42D2-BADE-56E7327924E3}.Debug|Any CPU.Build.0 = Debug|Any CPU
+		{2574F2C6-DDA5-42D2-BADE-56E7327924E3}.Release|Any CPU.ActiveCfg = Release|Any CPU
+		{2574F2C6-DDA5-42D2-BADE-56E7327924E3}.Release|Any CPU.Build.0 = Release|Any CPU
 	EndGlobalSection
 	GlobalSection(SolutionProperties) = preSolution
 		HideSolutionNode = FALSE
