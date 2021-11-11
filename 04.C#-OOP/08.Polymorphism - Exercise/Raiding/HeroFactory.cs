@@ -27,7 +27,7 @@ namespace Raiding
             }
             else
             {
-                return null;
+                throw new ArgumentException("Invalid hero!");
             }
         }
     }
