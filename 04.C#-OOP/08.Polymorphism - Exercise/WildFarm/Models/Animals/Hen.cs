@@ -18,7 +18,7 @@ namespace WildFarm.Models.Animals
 
         public override void Eat(string food, int quantity)
         {
-            //Validate food and increase weight
+            this.Weight += quantity * 0.35;
 
             base.Eat(food, quantity);
         }

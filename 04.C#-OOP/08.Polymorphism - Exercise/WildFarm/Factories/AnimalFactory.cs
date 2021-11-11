@@ -7,11 +7,11 @@ namespace WildFarm.Factories
 {
     public class AnimalFactory
     {
-        public static Animal CreateAnimal(string[] animalData)
+        public Animal CreateAnimal(string[] animalData)
         {
             var type = animalData[0];
             var name = animalData[1];
-            var weight = int.Parse(animalData[2]);
+            var weight = double.Parse(animalData[2]);
 
             if (type == nameof(Owl))
             {
@@ -39,15 +39,17 @@ namespace WildFarm.Factories
             }
             else if (type == nameof(Cat))
             {
-                var breed = animalData[3];
+                var livingRegion = animalData[3];
+                var breed = animalData[4];
 
-                return new Cat(name, weight, breed);
+                return new Cat(name, weight, livingRegion, breed);
             }
             else if (type == nameof(Tiger))
             {
-                var breed = animalData[3];
+                var livingRegion = animalData[3];
+                var breed = animalData[4];
 
-                return new Tiger(name, weight, breed);
+                return new Tiger(name, weight, livingRegion, breed);
             }
             else
             {

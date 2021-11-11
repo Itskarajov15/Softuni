@@ -18,9 +18,19 @@ namespace WildFarm.Models.Animals
 
         public override void Eat(string food, int quantity)
         {
-            //TODO:
-            
+            if (!Validator.VegetableValidator(food) && !Validator.FruitValidator(food))
+            {
+                throw new InvalidOperationException($"{this.GetType().Name} does not eat {food}!");
+            }
+
+            this.Weight += quantity * 0.1;
+
             base.Eat(food, quantity);
+        }
+
+        public override string ToString()
+        {
+            return $"{this.GetType().Name} [{this.Name}, {this.Weight}, {this.LivingRegion}, {this.FoodEaten}]";
         }
     }
 }

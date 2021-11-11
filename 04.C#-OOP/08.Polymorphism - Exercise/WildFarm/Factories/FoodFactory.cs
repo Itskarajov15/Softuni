@@ -7,7 +7,7 @@ namespace WildFarm.Factories
 {
     public class FoodFactory
     {
-        public static Food CreateFood(string[] foodData)
+        public Food CreateFood(string[] foodData)
         {
             var type = foodData[0];
             var quantity = int.Parse(foodData[1]);

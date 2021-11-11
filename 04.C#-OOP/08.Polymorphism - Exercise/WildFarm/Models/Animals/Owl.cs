@@ -19,11 +19,12 @@ namespace WildFarm.Models.Animals
 
         public override void Eat(string food, int quantity)
         {
-            if (food == nameof(Meat))
+            if (!Validator.MeatValidator(food))
             {
-
+                throw new InvalidOperationException($"{this.GetType().Name} does not eat {food}!");
             }
-            //increase weight
+
+            this.Weight += quantity * 0.25;
 
             base.Eat(food, quantity);
         }

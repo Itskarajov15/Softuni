@@ -7,28 +7,34 @@ namespace WildFarm
 {
     public static class Validator
     {
-        public static void MeatValidator(string animalType, string typeOfFood)
+        public static bool MeatValidator(string typeOfFood)
         {
-            if (typeOfFood != nameof(Meat))
+            if (typeOfFood == nameof(Meat))
             {
-                throw new InvalidOperationException($"{animalType} does not eat {typeOfFood}!");
+                return true;
             }
+
+            return false;
         }
 
-        public static void FruitValidator(string animalType, string typeOfFood)
+        public static bool FruitValidator(string typeOfFood)
         {
-            if (typeOfFood != nameof(Fruit))
+            if (typeOfFood == nameof(Fruit))
             {
-                throw new InvalidOperationException($"{animalType} does not eat {typeOfFood}!");
+                return true;
             }
+
+            return false;
         }
 
-        public static void VegetableValidator(string animalType, string typeOfFood)
+        public static bool VegetableValidator(string typeOfFood)
         {
-            if (typeOfFood != nameof(Vegetable))
+            if (typeOfFood == nameof(Vegetable))
             {
-                throw new InvalidOperationException($"{animalType} does not eat {typeOfFood}!");
+                return true;
             }
+
+            return false;
         }
     }
 }
