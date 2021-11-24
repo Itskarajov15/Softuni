@@ -1,4 +1,5 @@
 ﻿using NUnit.Framework;
+using Skeleton.Fakes;
 using System;
 using System.Collections.Generic;
 using System.Text;
@@ -11,13 +12,14 @@ namespace HeroTests.Tests
         [Test]
         public void HeroShouldGainsXPWhenTargetDies()
         {
-            var hero = new Hero("Name", new Axe(10, 10));
+            var fakeTarget = new FakeTarget();
+            var fakeWeapon = new FakeWeapon();
 
-            var dummy = new Dummy(1, 10);
+            var hero = new Hero("Gosho", fakeWeapon);
 
-            hero.Attack(dummy);
+            hero.Attack(fakeTarget);
 
-            Assert.AreEqual(10, hero.Experience);
+            Assert.AreEqual(fakeTarget.GiveExperience(), hero.Experience);
         }
     }
 }
