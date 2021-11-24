@@ -1,10 +1,7 @@
-﻿using NUnit.Framework;
-using Skeleton.Fakes;
-using System;
-using System.Collections.Generic;
-using System.Text;
+﻿using Moq;
+using NUnit.Framework;
 
-namespace HeroTests.Tests
+namespace Tests
 {
     [TestFixture]
     public class HeroTests
@@ -12,14 +9,17 @@ namespace HeroTests.Tests
         [Test]
         public void HeroShouldGainsXPWhenTargetDies()
         {
-            var fakeTarget = new FakeTarget();
-            var fakeWeapon = new FakeWeapon();
+            var fakeTarget = new Mock<ITarget>();
+            var fakeWeapon = new Mock<IWeapon>();
 
-            var hero = new Hero("Gosho", fakeWeapon);
+            var hero = new Hero("Asen", fakeWeapon.Object);
 
-            hero.Attack(fakeTarget);
+            fakeTarget.Setup(p => p.IsDead()).Returns(true);
+            fakeTarget.Setup(p => p.GiveExperience()).Returns(10);
 
-            Assert.AreEqual(fakeTarget.GiveExperience(), hero.Experience);
+            hero.Attack(fakeTarget.Object);
+
+            Assert.AreEqual(fakeTarget.Object.GiveExperience(), hero.Experience);
         }
     }
 }
