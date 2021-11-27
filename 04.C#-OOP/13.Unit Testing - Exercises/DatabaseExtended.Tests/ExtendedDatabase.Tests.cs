@@ -1,100 +1,134 @@
-using _02.ExtendedDatabase;
 using NUnit.Framework;
 using System;
 using System.Collections.Generic;
 
 namespace Tests
 {
-    public class Tests
+    public class ExtendedDatabaseTests
     {
-        private List<Person> peopleToAdd;
-        private _02.ExtendedDatabase.DatabasePeople people;
+        ExtendedDatabase db = null;
+        Person person = null;
 
         [SetUp]
         public void Setup()
         {
-            peopleToAdd = new List<Person>
+            person = new Person(124214, "Pesho");
+            db = new ExtendedDatabase(person);
+        }
+
+        [Test]
+        public void ConstructorShouldInitializeDataCorrectly()
+        {
+            Assert.IsNotNull(db);
+        }
+
+        [Test]
+        public void AddMethodShouldThrowExceptionIfPersonWithSameUsernameExists()
+        {
+            Assert.Throws<InvalidOperationException>(() => db.Add(new Person(124124, "Pesho")));
+        }
+
+        [Test]
+        public void AddMethodShouldThrowExceptionIfPersonWithSameIdExists()
+        {
+            Assert.Throws<InvalidOperationException>(() => db.Add(new Person(124214, "Ivan")));
+        }
+
+        [Test]
+        public void RemoveMethodShouldThrowExceptionIfCountIsZero()
+        {
+            var database = new ExtendedDatabase();
+
+            Assert.Throws<InvalidOperationException>(() => database.Remove());
+        }
+
+        [Test]
+        public void RemoveMethodShouldRemovePeopleCorrectly()
+        {
+            db.Add(new Person(123123213213, "Ivan"));
+
+            db.Remove();
+
+            Assert.AreEqual(1, db.Count);
+            Assert.Throws<InvalidOperationException>(() => db.FindById(123123213213));
+        }
+
+        [Test]
+        public void FindByUsernameMethodShouldThrowExceptionIfNameIsNull()
+        {
+            var database = new ExtendedDatabase();
+
+            Assert.Throws<ArgumentNullException>(() => database.FindByUsername(null));
+        }
+
+        [Test]
+        [TestCase("Lelq ti Goshka")]
+        [TestCase("Ginka")]
+        public void FindByUsernameMethodShouldThrowExceptionIfNoSuchPersonExists(string name)
+        {
+            Assert.Throws<InvalidOperationException>(() => db.FindByUsername(name));
+        }
+
+        [Test]
+        public void FindByIdShouldThrowExceptionIfIdIsNegativeNumber()
+        {
+            Assert.Throws<ArgumentOutOfRangeException>(() => db.FindById(-1));
+        }
+
+        [Test]
+        public void FindByIdShouldThrowExceptionIfPersonWithSameIdDoesntExists()
+        {
+            Assert.Throws<InvalidOperationException>(() => db.FindById(69));
+        }
+
+        [Test]
+        [TestCase(111, "Penka")]
+        public void FingByIdShouldReturnDataCorretly(int id, string name)
+        {
+            var person = new Person(id, name);
+
+            db.Add(person);
+
+            Assert.AreEqual(person, db.FindById(id));
+        }
+
+        [Test]
+        [TestCase(111, "Penka")]
+        public void FingByUsernameShouldReturnDataCorretly(int id, string name)
+        {
+            var person = new Person(id, name);
+
+            db.Add(person);
+
+            Assert.AreEqual(person, db.FindByUsername(name));
+        }
+
+        [Test]
+        public void AddRangeMethodShouldThrowExceptionIfCountIsBiggerThan16()
+        {
+            var peopleToAdd = new List<Person>();
+            var name = String.Empty;
+
+            for (int i = 0; i < 17; i++)
             {
-                new Person("Plamen", 12),
-                new Person("Ceco", 41),
-                new Person("Manqka", 69)
-            };
+                peopleToAdd.Add(new Person(i, name + i));
+            }
 
-            people = new _02.ExtendedDatabase.DatabasePeople(peopleToAdd);
+            Assert.Throws<ArgumentException>(() => new ExtendedDatabase(peopleToAdd.ToArray()));
         }
 
         [Test]
-        public void ConstructorShouldSetTheInitialCollection()
+        public void AddMethodShouldThrowExceptionIfCountIsBiggerThan16()
         {
-            //Arrange
-            _02.ExtendedDatabase.DatabasePeople data = new _02.ExtendedDatabase.DatabasePeople(peopleToAdd);
+            var database = new ExtendedDatabase();
+            var name = String.Empty;
 
-            //Assert
-            Assert.That(data.People, Is.EqualTo(peopleToAdd));
-        }
+            for (int i = 0; i < 16; i++)
+            {
+                database.Add(new Person(i, name + i));
+            }
 
-        [Test]
-        public void AddMethodShouldThrowInvalidOperationExceptionForUsername()
-        {
-            Assert.Throws<InvalidOperationException>
-                (() => people.AddPerson(new Person("Plamen", 12)));
-        }
-
-        [Test]
-        public void AddMethodShouldThrowInvalidOperationExceptionForId()
-        {
-            Assert.Throws<InvalidOperationException>
-                (() => people.AddPerson(new Person("Cvatq", 12)));
-        }
-
-        [Test]
-        public void RemoveMethodShouldRemoveAPersonFromCollection()
-        {
-            //Act
-            Person personToRemove = new Person("Plamen", 12);
-            people.Remove(personToRemove);
-
-            //Assert
-            Assert.AreEqual(2, people.People.Count);
-        }
-
-        [Test]
-        public void RemoveMethodShouldThrowNoUserException()
-        {
-            //Act
-            Person personToRemove = new Person("Goshko", 12);
-
-
-            //Assert
-            Assert.Throws<InvalidOperationException>(() => people.Remove(personToRemove));
-        }
-
-        [Test]
-        public void FindByUsernameMethodShouldThrowAnInvalidOperationException()
-        {
-            //Assert
-            Assert.Throws<InvalidOperationException>(() => people.FindByUsername("Ginka"));
-        }
-
-        [Test]
-        public void FindByUsernameMethodShouldThrowAnArgumentNullException()
-        {
-            //Assert
-            Assert.Throws<ArgumentNullException>(() => people.FindByUsername(null));
-        }
-
-        [Test]
-        public void FindByIdMethodShouldThrowAnInvalidOperationException()
-        {
-            //Assert
-            Assert.Throws<InvalidOperationException>(() => people.FindById(27));
-        }
-
-        [Test]
-        public void FindByIdMethodShouldThrowAnArgumentOutOfRangeException()
-        {
-            //Assert
-            Assert.Throws<ArgumentOutOfRangeException>(() => people.FindById(-20));
+            Assert.Throws<InvalidOperationException>(() => database.Add(person));
         }
     }
 }
