@@ -45,17 +45,36 @@ namespace Chainblock
 
         public IEnumerable<ITransaction> GetAllInAmountRange(double lo, double hi)
         {
-            throw new NotImplementedException();
+            return this.transactions
+                .Values
+                .Where(t => t.Amount >= lo && t.Amount <= hi)
+                .ToList();
         }
 
         public IEnumerable<ITransaction> GetAllOrderedByAmountDescendingThenById()
         {
-            throw new NotImplementedException();
+            return this.transactions
+                .Values
+                .OrderByDescending(t => t.Amount)
+                .ThenBy(t => t.Id)
+                .ToList();
         }
 
         public IEnumerable<string> GetAllReceiversWithTransactionStatus(TransactionStatus status)
         {
-            throw new NotImplementedException();
+            var receivers = this.transactions
+                .Values
+                .Where(t => t.Status == status)
+                .OrderBy(t => t.Amount)
+                .Select(t => t.To)
+                .ToList();
+
+            if (receivers.Count <= 0)
+            {
+                throw new InvalidOperationException();
+            }
+
+            return receivers;
         }
 
         public IEnumerable<string> GetAllSendersWithTransactionStatus(TransactionStatus status)
@@ -87,22 +106,67 @@ namespace Chainblock
 
         public IEnumerable<ITransaction> GetByReceiverAndAmountRange(string receiver, double lo, double hi)
         {
-            throw new NotImplementedException();
+            var sortedTransactions = this.transactions
+                .Values
+                .Where(t => t.To == receiver && t.Amount >= lo && t.Amount < hi)
+                .OrderByDescending(t => t.Amount)
+                .ThenBy(t => t.Id)
+                .ToList();
+
+            if (sortedTransactions.Count <= 0)
+            {
+                throw new InvalidOperationException();
+            }
+
+            return sortedTransactions;
         }
 
         public IEnumerable<ITransaction> GetByReceiverOrderedByAmountThenById(string receiver)
         {
-            throw new NotImplementedException();
+            var transactionToReceiver = this.transactions
+                .Values
+                .Where(t => t.To == receiver)
+                .OrderByDescending(t => t.Amount)
+                .ThenBy(t => t.Id)
+                .ToList();
+
+            if (transactionToReceiver.Count <= 0)
+            {
+                throw new InvalidOperationException();
+            }
+
+            return transactionToReceiver;
         }
 
         public IEnumerable<ITransaction> GetBySenderAndMinimumAmountDescending(string sender, double amount)
         {
-            throw new NotImplementedException();
+            var transactionsBySender = this.transactions
+                .Values
+                .Where(t => t.From == sender && t.Amount > amount)
+                .ToList();
+
+            if (transactionsBySender.Count <= 0)
+            {
+                throw new InvalidOperationException();
+            }
+
+            return transactionsBySender;
         }
 
         public IEnumerable<ITransaction> GetBySenderOrderedByAmountDescending(string sender)
         {
-            throw new NotImplementedException();
+            var transactionsBySender = this.transactions
+                .Values
+                .Where(t => t.From == sender)
+                .OrderByDescending(t => t.Amount)
+                .ToList();
+
+            if (transactionsBySender.Count <= 0)
+            {
+                throw new InvalidOperationException();
+            }
+
+            return transactionsBySender;
         }
 
         public IEnumerable<ITransaction> GetByTransactionStatus(TransactionStatus status)
@@ -123,7 +187,10 @@ namespace Chainblock
 
         public IEnumerable<ITransaction> GetByTransactionStatusAndMaximumAmount(TransactionStatus status, double amount)
         {
-            throw new NotImplementedException();
+            return this.transactions
+                .Values
+                .Where(t => t.Status == status && t.Amount <= amount)
+                .ToList();
         }
 
         public IEnumerator<ITransaction> GetEnumerator()
@@ -146,7 +213,7 @@ namespace Chainblock
 
         IEnumerator IEnumerable.GetEnumerator()
         {
-            throw new NotImplementedException();
+            return GetEnumerator();
         }
     }
 }
