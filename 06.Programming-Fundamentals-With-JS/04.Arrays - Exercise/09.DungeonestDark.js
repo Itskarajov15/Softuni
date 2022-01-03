@@ -2,39 +2,41 @@ function solve(input){
     let rooms = input[0].split("|");
     let health = 100;
     let coins = 0;
-    let room = 1;
+    let roomCount = 1;
     
     for (const room of rooms) {
-        if (room[0] === "potion") {
-            let healthPoints = Number(room[1]);
+        let roomArr = room.split(" ");
+        if (roomArr[0] === "potion") {
+            let healthPoints = Number(roomArr[1]);
             health += healthPoints;
             if (health > 100) {
-                healthPoints = 100 - health;
+                healthPoints = healthPoints - (health - 100);
                 health = 100;
             }
 
             console.log(`You healed for ${healthPoints} hp.`); ////////////////////////////
             console.log(`Current health: ${health} hp.`);
-        } else if(room[0] === "chest"){
-            let coinsFound = Number(room[1]);
+        } else if(roomArr[0] === "chest"){
+            let coinsFound = Number(roomArr[1]);
             coins += coinsFound;
 
             console.log(`You found ${coinsFound} coins.`);
         } else{
-            let nameOfMonster = room[0];
-            let attackOfMonster = Number(room[1]);
+            let nameOfMonster = roomArr[0];
+            let attackOfMonster = Number(roomArr[1]);
 
             health -= attackOfMonster;
 
             if(health <= 0){
                 console.log(`You died! Killed by ${nameOfMonster}.`);
-                console.log(`Best room: ${room}`);
+                console.log(`Best room: ${roomCount}`);
+                break;
             } else{
                 console.log(`You slayed ${nameOfMonster}.`);
             }
         }
 
-        room++;
+        roomCount++;
     }
 
     if (health > 0) {
@@ -44,4 +46,4 @@ function solve(input){
     }
 }
 
-solve(["rat 10|bat 20|potion 10|rat 10|chest 100|boss 70|chest 1000"]);
+solve(["rat 10|potion 30|orc 10|chest 10|boss 25|chest 110"]);
