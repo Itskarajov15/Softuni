@@ -13,33 +13,29 @@ function solve(input){
 
             movies.push(movie);
         } else if(currCommand.includes("directedBy")){
-            let name = currCommand.split(" directedBy")[0];
-            let director = currCommand.split("directedBy ")[1];
+            let [name, director] = currCommand.split(" directedBy ");
 
-            for (const currMovie of movies) {
-                if(currMovie.name === name){
-                    currMovie.director = director;
-                }
+            let neededMovie = movies.find(m => m.name === name);
+
+            if (neededMovie) {
+                neededMovie.director = director;
             }
         } else if(currCommand.includes("onDate")){
-            let name = currCommand.split(" onDate")[0];
-            let date = currCommand.split("onDate ")[1];
+            let [name, date] = currCommand.split(" onDate ");
 
-            for (const movie of movies) {
-                if(movie.name === name){
-                    movie.date = date;
-                }
+            let neededMovie = movies.find(m => m.name === name);
+
+            if (neededMovie) {
+                neededMovie.date = date;
             }
         }
     }
 
-    for (const currMovie of movies) {
-        if (currMovie.director === undefined && currMovie.date === undefined) {
-            continue;
+    movies.forEach(m => {
+        if(m.name && m.date && m.director){
+            console.log(JSON.stringify(m));
         }
-
-        console.log(JSON.stringify(currMovie));
-    }
+    })
 }
 
 solve([
