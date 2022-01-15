@@ -12,7 +12,7 @@ function solve(b, k){
         result[i] = sum;
     }
 
-    console.log(result);
+    return result;
 }
 
-solve(6, 3);
+console.log(solve(6, 3));
