@@ -3,7 +3,7 @@ function solve(numbers){
 
     let biggerHalf = numbers.slice(numbers.length / 2);
 
-    console.log(biggerHalf);
+    return biggerHalf;
 }
 
-solve([4, 7, 2, 5]);
+console.log(solve([4, 7, 2, 5]));
