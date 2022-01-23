@@ -1,0 +1,32 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta http-equiv="X-UA-Compatible" content="IE=edge">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Test page</title>
+</head>
+<body>
+    <h1 id="heading">Hello world!</h1>
+
+    <ul>
+        <li id="car">BMW is the best car!</li>
+    </ul>
+
+    <button onclick="changeTitle()">Title</button>
+
+    <button onclick="changeCar()">Car</button>
+
+    <script>
+        function changeTitle(){
+            let headingElement = document.getElementById('heading');
+            headingElement.textContent = 'Hello from Js!';
+        }
+
+        function changeCar(){
+            let liElement = document.getElementById('car');
+            liElement.textContent = 'Mercedes-Benz is the best car!!!';
+        }
+    </script>
+</body>
+</html>
