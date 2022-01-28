@@ -1,0 +1,39 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta http-equiv="X-UA-Compatible" content="IE=edge">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Test page</title>
+</head>
+<body>
+    <div id="div-block" style="background-color: black; color: white; padding: 50px;"></div>
+
+    <input type="text" id="some-text" />
+    <button id="some-button" disabled style="padding: 10px 20px; background-color: black; color: white">Change Color</button>
+
+    <script>
+        let divElement = document.getElementById('div-block');
+        let textElement = document.getElementById('some-text');
+        let buttonElement = document.getElementById('some-button');
+
+        textElement.addEventListener('input', function(e) {
+            if (e.currentTarget.value.length <= 0) {
+                buttonElement.setAttribute('disabled', true);
+            } else {
+                buttonElement.removeAttribute('disabled');
+            }
+        });
+
+        buttonElement.addEventListener('click', function(e) {
+            let inputColor = textElement.value;
+            divElement.style.backgroundColor = inputColor;
+            buttonElement.style.backgroundColor = inputColor;
+
+            if (inputColor === 'white') {
+                buttonElement.style.color = 'black';
+            }
+        })
+    </script>
+</body>
+</html>

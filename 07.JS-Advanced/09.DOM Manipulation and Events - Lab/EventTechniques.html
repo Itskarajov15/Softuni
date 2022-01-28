@@ -1,0 +1,50 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta http-equiv="X-UA-Compatible" content="IE=edge">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Test page</title>
+</head>
+<body>
+    <div id="text-block" style="background-color: black; color: white; padding: 50px;">
+        Lorem ipsum dolor sit amet consectetur adipisicing elit. Pariatur, amet.
+    </div>
+
+    <input type="text" id="some-text" />
+    <button id="some-button" disabled style="padding: 10px 20px; background-color: black; color: white">Send</button>
+
+    <script>
+        let divElement = document.getElementById('text-block');
+
+        divElement.addEventListener('mouseover', function(e) {
+            let background = e.currentTarget.style.backgroundColor;
+
+            if (background === 'black') {
+                divElement.style.backgroundColor = 'white';
+                divElement.style.color = 'black';
+            }
+        });
+
+        divElement.addEventListener('mouseout', function(e) {
+            let background = e.currentTarget.style.backgroundColor;
+
+            if (background === 'white') {
+                divElement.style.backgroundColor = 'black';
+                divElement.style.color = 'white';
+            }
+        })
+
+        let textElement = document.getElementById('some-text');
+        let buttonElement = document.getElementById('some-button');
+
+        textElement.addEventListener('input', function(e) {
+            if (e.currentTarget.value.length <= 0) {
+                buttonElement.setAttribute('disabled', true);
+            } else {
+                buttonElement.removeAttribute('disabled');
+            }
+        })
+    </script>
+</body>
+</html>
