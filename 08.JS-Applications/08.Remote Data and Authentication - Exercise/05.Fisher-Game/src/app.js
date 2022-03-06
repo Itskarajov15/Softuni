@@ -1,1 +1,4 @@
-console.log('TODO:// Implement Home functionality');
+window.addEventListener('DOMContentLoaded', () => {
+    const formElement = document.querySelector('form');
+    formElement.addEventListener('submit', login);
+});
