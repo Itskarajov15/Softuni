@@ -1,6 +1,23 @@
 const formElement = document.querySelector('form');
 formElement.addEventListener('submit', register);
 
+const logoutElement = document.getElementById('logout');
+logoutElement.addEventListener('click', async () => {
+    const url = 'http://localhost:3030/users/logout';
+
+    const userObj = JSON.parse(sessionStorage.userData);
+    const res = await fetch(url, {
+        headers: {
+            "X-Authorization": userObj.accessToken
+        }
+    });
+
+    if (res.ok) {
+        sessionStorage.clear();
+        window.location = 'index.html';
+    }
+});
+
 async function register(e) {
     e.preventDefault();
 
@@ -39,7 +56,7 @@ async function register(e) {
         };
 
         sessionStorage.setItem('userData', JSON.stringify(userData));
-        window.location = 'index.html';
+        console.log(sessionStorage.getItem('userData'));
         formElement.reset();
     } catch (error) {
         alert(error.message);

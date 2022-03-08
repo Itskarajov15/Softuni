@@ -4,14 +4,18 @@ formElement.addEventListener('submit', login);
 const logoutElement = document.getElementById('logout');
 logoutElement.addEventListener('click', async () => {
     const url = 'http://localhost:3030/users/logout';
-    
-    const res = await fetch(url);
+
+    const userObj = JSON.parse(sessionStorage.userData);
+    const res = await fetch(url, {
+        headers: {
+            "X-Authorization": userObj.accessToken
+        }
+    });
+
     if (res.ok) {
         sessionStorage.clear();
-        window.location = `index.html`;
+        window.location = 'index.html';
     }
-
-    console.log('yes');
 });
 
 async function login(e) {
@@ -36,6 +40,7 @@ async function login(e) {
 
         const data = await res.json();
 
+        console.log(data);
         sessionStorage.setItem('userData', JSON.stringify(data));
         window.location = 'index.html';
         formElement.reset();
