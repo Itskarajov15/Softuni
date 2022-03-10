@@ -1,0 +1,33 @@
+<!DOCTYPE html>
+<html lang="en">
+
+<head>
+    <meta charset="UTF-8">
+    <meta http-equiv="X-UA-Compatible" content="IE=edge">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Test</title>
+</head>
+
+<body>
+    <script>
+        async function solve() {
+            const url = 'http://localhost:3030/jsonstore/phonebook';
+
+            const newPhone = {
+                person: 'Maya',
+                phone: '0897572661'
+            };
+
+            const response = await fetch(url, {
+                method: 'POST',
+                headers: { 'Content-Type': 'application/json' },
+                body: JSON.stringify(newPhone)
+            });
+
+            const result = await response.json();
+            console.log(result);
+        }
+    </script>
+</body>
+
+</html>
