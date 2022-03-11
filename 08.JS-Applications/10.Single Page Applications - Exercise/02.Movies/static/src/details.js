@@ -15,63 +15,93 @@ async function getMovie(id) {
 }
 
 async function displayMovie(id) {
-    const movie = await getMovie(id);
+    const user = JSON.parse(localeStorage.getItem('user'));
 
-    detailsSection.replaceChildren(crateMovieCard(movie));
+    const [movie, likes, ownLike] = await Promise.all([
+        getMovie(id),
+        getLikes(id),
+        getOwnLike(id, user)
+    ]);
+
+    detailsSection.replaceChildren(crateMovieCard(movie, user, likes, ownLike));
 }
 
-function crateMovieCard(movie) {
-    const mainDiv = document.createElement('div');
-    mainDiv.className = 'row bg-light text-dark';
+function crateMovieCard(movie, user, likes, ownLike) {
+    const element = document.createElement('div');
+    element.className = 'container';
+    element.innerHTML = `<div class="row bg-light text-dark">
+    <h1>Movie title: ${movie.title}</h1>
 
-    const h1 = document.createElement('h1');
-    h1.textContent = movie.title;
+    <div class="col-md-8">
+        <img class="img-thumbnail" src="${movie.img}"
+             alt="Movie">
+    </div>
+    <div class="col-md-4 text-center">
+        <h3 class="my-3 ">Movie Description</h3>
+        <p>${movie.description}</p>
+        ${createControls(movie, user, ownLike)}
+        <span class="enrolled-span">Liked ${likes}</span>
+    </div>
+</div>`;
 
-    const divImg = document.createElement('div');
-    divImg.className = 'col-md-8';
+    const likeBtn = document.querySelector('.like-btn');
+    if (likeBtn) {
+        likeBtn.addEventListener('click', (e) => likeMovie(e, movie._id));
+    }
+    return element;
+}
 
-    const img = document.createElement('img');
-    img.className = 'img-thumbnail';
-    img.src = movie.img;
-    img.alt = 'Movie';
-    divImg.appendChild(img);
+function createControls(movie,user, ownLike) {
+    const isOwner = user && user._id == movie._ownerId;
 
-    const descriptionDiv = document.createElement('div');
-    descriptionDiv.className = 'col-md-4 text-center';
+    let controls = [];
 
-    const h3 = document.createElement('h3');
-    h3.className = 'my-3';
-    h3.textContent = 'Movie Description';
+    if (isOwner) {
+        controls.push('<a class="btn btn-danger" href="#">Delete</a>');
+        controls.push('<a class="btn btn-warning" href="#">Edit</a>');
+    } else if(user && ownLike == false) {
+        controls.push('<a class="btn btn-primary like-btn" href="#">Like</a>')
+    }
 
-    const pDescription = document.createElement('p');
-    pDescription.textContent = movie.description;
+    controls.push();
 
-    const deleteButton = document.createElement('button');
-    deleteButton.textContent = 'Delete';
-    deleteButton.className = 'btn btn-danger';
+    return controls.join('');
+}
 
-    const editButton = document.createElement('button');
-    editButton.textContent = 'Edit';
-    editButton.className = 'btn btn-warning';
+async function getLikes(id) {
+    const res = await fetch(`http://localhost:3030/data/likes?where=movieId%3D%22${id}%22&distinct=_ownerId&count`);
+    const likes = await res.json();
 
-    const likeButton = document.createElement('button');
-    likeButton.textContent = 'Like';
-    likeButton.className = 'btn btn-primary';
+    return likes;
+}
 
-    const spanLikes = document.createElement('span');
-    spanLikes.className = 'enrolled-span';
-    spanLikes.textContent = 'Liked 1';
+async function getOwnLike(movieId, user) {
+    if (!user) {
+        return false;
+    } else {
+        const userId = user._id;
+        const res = await fetch(`http://localhost:3030/data/likes?where=movieId%3D%22${movieId}%22%20and%20_ownerId%3D%22${userId}%22`);
+        const like = await res.json();
 
-    descriptionDiv.appendChild(h3);
-    descriptionDiv.appendChild(pDescription);
-    descriptionDiv.appendChild(deleteButton);
-    descriptionDiv.appendChild(editButton);
-    descriptionDiv.appendChild(likeButton);
-    descriptionDiv.appendChild(spanLikes);
+        return like.length > 0;
+    }
+}
 
-    mainDiv.appendChild(h1);
-    mainDiv.appendChild(divImg);
-    mainDiv.appendChild(descriptionDiv);
+async function likeMovie(e, movieId) {
+    e.preventDefault();
 
-    return mainDiv;
+    const user = JSON.parse(localStorage.getItem('user'));
+
+    await fetch('http://localhost:3030/data/likes', {
+        method: 'POST',
+        headers: {
+            'Content-Type': 'application/json',
+            'X-Authorization': user.accessToken
+        },
+        body: JSON.stringify({
+            movieId
+        })
+    });
+
+    detailsPage(movieId);
 }
