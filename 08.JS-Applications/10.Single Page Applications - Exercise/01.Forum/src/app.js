@@ -30,6 +30,8 @@ async function showComments(e) {
     let allPosts = await getPosts();
     let neededPost = Object.values(allPosts).filter(p => p._id == postId)[0];
     document.querySelector('.container').style.display = 'none';
+    document.querySelector('.post-comments').style.display = 'block';
+    document.querySelector('footer').style.display = 'none';
     let element = renderPostDetails(neededPost);
     document.querySelector('.post-comments main').innerHTML= element;
     displayComments(postId);
