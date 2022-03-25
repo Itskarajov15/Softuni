@@ -1,5 +1,6 @@
 import { html } from '../../node_modules/lit-html/lit-html.js';
 import * as albumService from '../services/albumService.js';
+import { validator } from '../utils.js/validators.js';
 
 const createTemplate = (submitHandler) => html`
     <section class="createPage">
@@ -40,26 +41,10 @@ export const createView = (ctx) => {
     const submitHandler = async (e) => {
         e.preventDefault();
         
-        const formData = new FormData(e.currentTarget);
+        const albumData = Object.fromEntries(new FormData(e.currentTarget));
 
-        const name = formData.get('name');
-        const imgUrl = formData.get('imgUrl');
-        const price = formData.get('price');
-        const releaseDate = formData.get('releaseDate');
-        const artist = formData.get('artist');
-        const genre = formData.get('genre');
-        const description = formData.get('description');
-
-        if (name, imgUrl, price, releaseDate, artist, genre, description) {
-            albumService.create({
-                name,
-                imgUrl,
-                price,
-                releaseDate,
-                artist,
-                genre,
-                description
-            });
+        if (!validator(albumData)) {
+            albumService.create(albumData);
 
             ctx.page.redirect('/catalog');
         } else {

@@ -33,7 +33,7 @@ export const loginView = (ctx) => {
             const res = await userService.login(email, password);
             ctx.page.redirect('/');
         } catch (err) {
-            alert(err.message);
+            return;
         }
     }
 

@@ -14,3 +14,7 @@ export const getCurrentAlbum = async (albumId) => {
 export const create = async (albumData) => {
     return await request.post(baseUrl, albumData);
 }
+
+export const edit = async (albumId, albumData) => request.put(`${baseUrl}/${albumId}`, albumData);
+
+export const deleteAlbum = async(albumId) => request.del(`${baseUrl}/${albumId}`);

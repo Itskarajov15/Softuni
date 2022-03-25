@@ -18,8 +18,16 @@ const request = async (method, url, data) => {
         options.body = JSON.stringify(data);
     }
 
-    const res = await fetch(url, options);
-    return res.json();
+    try {
+        const res = await fetch(url, options);
+        if (res.ok != true) {
+            const error = await res.json();
+            alert(error.message);
+        }
+        return res.json();
+    } catch (error) {
+        return;
+    }
 }
 
 export const get = request.bind({}, 'GET');
