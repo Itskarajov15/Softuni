@@ -11,20 +11,20 @@ const bookTemplate = (book) => html`
     </li>
 `;
 
-const homeTemplate = (books) => html`
-    <section id="dashboard-page" class="dashboard">
-        <h1>Dashboard</h1>
+const myBooksTemplate = (books) => html`
+    <section id="my-books-page" class="my-books">
+        <h1>My Books</h1>
 
         ${books.length > 0
-            ? html`<ul class="other-books-list">${books.map(b => bookTemplate(b))}</ul>`
+            ? html`<ul class="my-books-list">${books.map(b => bookTemplate(b))}</ul>`
             : html`<p class="no-books">No books in database!</p>`
         }
 
     </section>
 `;
 
-export const homeView = async (ctx) => {
-    const books = await bookService.getAllBooks();
+export const myBooksView = async (ctx) => {
+    const authorBooks = await bookService.getBooksByAuthor(ctx.user._id);
 
-    ctx.render(homeTemplate(books));
+    ctx.render(myBooksTemplate(authorBooks));
 }

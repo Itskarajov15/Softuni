@@ -11,3 +11,11 @@ export const getUser = () => {
         return JSON.parse(serializedUser);
     }
 }
+
+export const getAccessToken = () => {
+    return getUser()?.accessToken;
+}
+
+export const removeUser = () => {
+    localStorage.removeItem('user');
+}

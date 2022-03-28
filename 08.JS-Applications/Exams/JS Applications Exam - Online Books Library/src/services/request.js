@@ -1,4 +1,4 @@
-//import * as authService from '../services/authService.js';
+import * as authService from '../services/authService.js';
 
 const host = 'http://localhost:3030';
 
@@ -8,11 +8,10 @@ async function request(method, url, data) {
         headers: {}
     };
 
-    //const token = authService.getAccessToken();
-    ////////////////////////////////////////////////////////////////////////////TODO!!!
-    //if (token) {
-        //options.headers['X-Authorization'] = token;
-    //}
+    const token = authService.getAccessToken();
+    if (token) {
+        options.headers['X-Authorization'] = token;
+    }
 
     debugger;
     if (data) {

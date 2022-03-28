@@ -1,8 +1,8 @@
 import { html } from '../../node_modules/lit-html/lit-html.js';
 
-const userLinks = html`
+const userLinks = (email) => html`
     <div id="user">
-        <span>Welcome, {email}</span>
+        <span>Welcome, ${email}</span>
         <a class="button" href="/my-books">My Books</a>
         <a class="button" href="/create">Add Book</a>
         <a class="button" href="/logout">Logout</a>
@@ -22,7 +22,7 @@ const navigationTemplate = (user) => html`
             <a href="/">Dashboard</a>
 
             ${user
-                ? userLinks
+                ? userLinks(user.email)
                 : guestLinks
             }
         </section>
