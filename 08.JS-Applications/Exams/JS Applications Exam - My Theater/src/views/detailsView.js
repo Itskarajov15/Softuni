@@ -7,7 +7,11 @@ const creatorLinks = (eventId) => html`
     <a class="btn-edit" href="/details/${eventId}/edit">Edit</a>
 `;
 
-const detailsTemplate = (event, isCreator) => html`
+const nonCreatorLinks = (eventId) => html`
+    <a class="btn-like" href="/details/${eventId}/like">Like</a>
+`;
+
+const detailsTemplate = (event, isCreator, user, likes) => html`
     <section id="detailsPage">
         <div id="detailsBox">
             <div class="detailsInfo">
@@ -29,8 +33,13 @@ const detailsTemplate = (event, isCreator) => html`
                         : nothing
                     }
 
+                    ${user && !isCreator
+                        ? nonCreatorLinks(event._id)
+                        : nothing
+                    }
+
                 </div>
-                <p class="likes">Likes: 0</p>
+                <p class="likes">Likes: ${likes}</p>
             </div>
         </div>
     </section>
@@ -38,6 +47,7 @@ const detailsTemplate = (event, isCreator) => html`
 
 export const detailsView = async (ctx) => {
     const event = await eventsService.getEvent(ctx.params.id);
+    const likes = await eventsService.getLikes(ctx.params.id);
 
-    ctx.render(detailsTemplate(event, Boolean(ctx.user && event._ownerId == ctx.user._id)));
+    ctx.render(detailsTemplate(event, Boolean(ctx.user && event._ownerId == ctx.user._id), ctx.user, likes));
 }

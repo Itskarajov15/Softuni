@@ -590,7 +590,7 @@ describe('E2E tests', function () {
         });
     });
 
-    describe('BONUS : Like functionality  [ 15 Points ]', async () => {
+    describe.only('BONUS : Like functionality  [ 15 Points ]', async () => {
 
         it('Like button is NOT visible for guest users [ 2.5 Points ]', async () => {
             await page.goto(host);

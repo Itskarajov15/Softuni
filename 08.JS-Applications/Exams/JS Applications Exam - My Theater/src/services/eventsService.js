@@ -23,3 +23,11 @@ export const getAllEvents = async () => {
 export const getEventsByUser = async (userId) => {
     return await request.get(`/data/theaters?where=_ownerId%3D%22${userId}%22&sortBy=_createdOn%20desc`);
 }
+
+export const getLikes = async (eventId) => {
+    return await request.get(`/data/likes?where=theaterId%3D%22${eventId}%22&distinct=_ownerId&count`);
+}
+
+export const likeEvent = async(eventId) => {
+    return await request.post('/data/likes', eventId);
+}
