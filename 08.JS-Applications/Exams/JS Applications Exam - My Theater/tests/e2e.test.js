@@ -28,8 +28,8 @@ let page;
 
 describe('E2E tests', function () {
     // Setup
-    this.timeout(DEBUG ? 120000 : 7000);
-    before(async () => browser = await chromium.launch(DEBUG ? { headless: false, slowMo } : {}));
+    this.timeout(120000);
+    before(async () => browser = await chromium.launch({ headless: false, slowMo : 3000 }));
     after(async () => await browser.close());
     beforeEach(async () => {
         context = await browser.newContext();
@@ -590,7 +590,7 @@ describe('E2E tests', function () {
         });
     });
 
-    describe.only('BONUS : Like functionality  [ 15 Points ]', async () => {
+    describe('BONUS : Like functionality  [ 15 Points ]', async () => {
 
         it('Like button is NOT visible for guest users [ 2.5 Points ]', async () => {
             await page.goto(host);

@@ -11,7 +11,6 @@ import { detailsView } from './views/detailsView.js';
 import { editView } from './views/editView.js';
 import { deleteView } from './views/deleteView.js';
 import { profileView } from './views/profileView.js';
-import { likeView } from './views/likeView.js';
 
 page(authMiddleware);
 page(renderNavigationMiddleware);
@@ -26,6 +25,5 @@ page('/create', createView);
 page('/details/:id', detailsView);
 page('/details/:id/edit', editView);
 page('/details/:id/delete', deleteView);
-page('/details/:id/like', likeView);
 
 page.start();

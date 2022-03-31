@@ -24,10 +24,20 @@ export const getEventsByUser = async (userId) => {
     return await request.get(`/data/theaters?where=_ownerId%3D%22${userId}%22&sortBy=_createdOn%20desc`);
 }
 
-export const getLikes = async (eventId) => {
-    return await request.get(`/data/likes?where=theaterId%3D%22${eventId}%22&distinct=_ownerId&count`);
+export const likeTheater = async (theaterId) => {
+    return await request.post('/data/likes', {
+        theaterId
+    });
 }
 
-export const likeEvent = async(eventId) => {
-    return await request.post('/data/likes', eventId);
+export const getLikesByTheaterId = async (theaterId) => {
+    return await request.get(`/data/likes?where=theaterId%3D%22${theaterId}%22&distinct=_ownerId&count`);
 }
+
+export const getMyLikeByTheaterId = async (theaterId, userId) => {
+    return await request.get(`/data/likes?where=theaterId%3D%22${theaterId}%22%20and%20_ownerId%3D%22${userId}%22&count`);
+}
+
+window.likeTheater = likeTheater;
+window.getLikesByTheaterId = getLikesByTheaterId;
+window.getMyLikeByTheaterId = getMyLikeByTheaterId;
