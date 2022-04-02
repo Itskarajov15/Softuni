@@ -17,4 +17,10 @@ export const create = async (albumData) => {
 
 export const edit = async (albumId, albumData) => request.put(`${baseUrl}/${albumId}`, albumData);
 
-export const deleteAlbum = async(albumId) => request.del(`${baseUrl}/${albumId}`);
+export const deleteAlbum = async (albumId) => request.del(`${baseUrl}/${albumId}`);
+
+export const searchAlbum = async (searchText) => {
+    const query = encodeURIComponent(`name LIKE "${searchText}"`);
+
+    return await request.get(`${baseUrl}?where=${query}`);
+}
