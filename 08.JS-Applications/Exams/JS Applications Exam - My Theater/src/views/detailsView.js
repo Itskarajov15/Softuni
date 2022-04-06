@@ -7,11 +7,15 @@ const creatorLinks = (eventId) => html`
     <a class="btn-edit" href="/details/${eventId}/edit">Edit</a>
 `;
 
-const nonCreatorLinks = (eventId) => html`
-    <a class="btn-like" href="/details/${eventId}/like">Like</a>
-`;
+const likeControlsTemplate = (showLikeButton, onLike) => {
+    if (showLikeButton) {
+        return html`<a @click=${onLike} class="btn-like" href="javascript:void(0)">Like</a>`;
+    } else {
+        return null;
+    }
+}
 
-const detailsTemplate = (event, isCreator, user, likes) => html`
+const detailsTemplate = (event, isCreator, likes, showLikeButton, onLike) => html`
     <section id="detailsPage">
         <div id="detailsBox">
             <div class="detailsInfo">
@@ -33,9 +37,8 @@ const detailsTemplate = (event, isCreator, user, likes) => html`
                         : nothing
                     }
 
-                    ${user && !isCreator
-                        ? nonCreatorLinks(event._id)
-                        : nothing
+                    ${
+                        likeControlsTemplate(showLikeButton, onLike)
                     }
 
                 </div>
@@ -46,8 +49,21 @@ const detailsTemplate = (event, isCreator, user, likes) => html`
 `;
 
 export const detailsView = async (ctx) => {
-    const event = await eventsService.getEvent(ctx.params.id);
-    const likes = await eventsService.getLikes(ctx.params.id);
+    const user = ctx.user;
 
-    ctx.render(detailsTemplate(event, Boolean(ctx.user && event._ownerId == ctx.user._id), ctx.user, likes));
+    const [theater, likes, hasLike] = await Promise.all([
+        eventsService.getEvent(ctx.params.id),
+        eventsService.getLikesByTheaterId(ctx.params.id),
+        Boolean(user) ? eventsService.getMyLikeByTheaterId(ctx.params.id, user._id) : 0
+    ]);
+
+    const isCreator = Boolean(user && theater._ownerId == user._id);
+    const showLikeButton = user != null && isCreator == false && hasLike == false;
+
+    const onLike = async () => {
+        await eventsService.likeTheater(ctx.params.id);
+        ctx.page.redirect(`/details/${ctx.params.id}`);
+    }
+
+    ctx.render(detailsTemplate(theater, isCreator, likes, showLikeButton, onLike));
 }

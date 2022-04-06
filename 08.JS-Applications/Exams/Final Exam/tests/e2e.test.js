@@ -4,7 +4,7 @@ const { expect } = require('chai');
 const host = 'http://localhost:3000'; // Application host (NOT service host - that can be anything)
 const interval = 500;
 const DEBUG = false;
-const slowMo = 500;
+const slowMo = 3000;
 
 const mockData = require('./mock-data.json');
 
@@ -12,14 +12,13 @@ const endpoints = {
     register: '/users/register',
     login: '/users/login',
     logout: '/users/logout',
-    catalog: '/data/theaters?sortBy=_createdOn%20desc&distinct=title',
-    create: '/data/theaters',
-    like: '/data/likes',
-    details: (id) => `/data/theaters/${id}`,
-    delete: (id) => `/data/theaters/${id}`,
-    profile: (id) => `/data/theaters?where=_ownerId%3D%22${id}%22&sortBy=_createdOn%20desc`,
-    total: (theaterId) => `/data/likes?where=theaterId%3D%22${theaterId}%22&distinct=_ownerId&count`,
-    own: (theaterId, userId) => `/data/likes?where=theaterId%3D%22${theaterId}%22%20and%20_ownerId%3D%22${userId}%22&count`
+    catalog: '/data/pets?sortBy=_createdOn%20desc&distinct=name',
+    create: '/data/pets',
+    donation: '/data/donation',
+    details: (id) => `/data/pets/${id}`,
+    delete: (id) => `/data/pets/${id}`,
+    total: (petId) => `/data/donation?where=petId%3D%22${petId}%22&distinct=_ownerId&count`,
+    own: (petId, userId) => `/data/donation?where=petId%3D%22${petId}%22%20and%20_ownerId%3D%22${userId}%22&count`
 };
 
 let browser;
@@ -28,8 +27,8 @@ let page;
 
 describe('E2E tests', function () {
     // Setup
-    this.timeout(120000);
-    before(async () => browser = await chromium.launch({ headless: false, slowMo : 3000 }));
+    this.timeout(DEBUG ? 500000000 : 7000);
+    before(async () => browser = await chromium.launch(DEBUG ? { headless: false, slowMo } : {}));
     after(async () => await browser.close());
     beforeEach(async () => {
         context = await browser.newContext();
@@ -181,9 +180,9 @@ describe('E2E tests', function () {
 
             //Test for navigation
             await page.waitForTimeout(interval);
-            expect(await page.isVisible('nav >> text=Theater')).to.be.true;
-            expect(await page.isVisible('nav >> text=Profile')).to.be.true;
-            expect(await page.isVisible('nav >> text=Create Event')).to.be.true;
+            expect(await page.isVisible('nav >> text=Home')).to.be.true;
+            expect(await page.isVisible('nav >> text=Dashboard')).to.be.true;
+            expect(await page.isVisible('nav >> text=Create Postcard')).to.be.true;
             expect(await page.isVisible('nav >> text=Logout')).to.be.true;
 
             expect(await page.isVisible('nav >> text=Login')).to.be.false;
@@ -193,8 +192,8 @@ describe('E2E tests', function () {
         it('Guest user should see correct navigation [ 2.5 Points ]', async () => {
             await page.goto(host);
             await page.waitForTimeout(interval);
-            expect(await page.isVisible('nav >> text=Theater')).to.be.true;
-            expect(await page.isVisible('nav >> text=Profile')).to.be.false;
+            expect(await page.isVisible('nav >> text=Home')).to.be.true;
+            expect(await page.isVisible('nav >> text=Dashboard')).to.be.true;
             expect(await page.isVisible('nav >> text=Create Event')).to.be.false;
             expect(await page.isVisible('nav >> text=Logout')).to.be.false;
 
@@ -203,50 +202,73 @@ describe('E2E tests', function () {
         });
     });
 
-    describe('Home Page [ 15 Points ]', () => {
-        it('Show home page - welcome message [ 2.5 Points ]', async () => {
+    describe('Home Page [ 10 Points ]', () => {
+        it('Show home page - Welcome [ 5 Points ]', async () => {
             await page.goto(host);
             await page.waitForTimeout(interval);
 
-            expect(await page.isVisible('text=My Theater')).to.be.true;
-            expect(await page.isVisible('text=Since 1962 World Theatre Day has been celebrated by ITI Centres, ITI Cooperating Members, theatre professionals, theatre organizations, theatre universities and theatre lovers all over the world on the 27th of March. This day is a celebration for those who can see the value and importance of the art form “theatre”, and acts as a wake-up-call for governments, politicians and institutions which have not yet recognised its value to the people and to the individual and have not yet realised its potential for economic growth.')).to.be.true;
+            expect(await page.isVisible('text=We Care Your Pets')).to.be.true;
         });
 
-        it('Check home page with 0 theaters [ 2.5 Points ]', async () => {
+        it('Show home page - Name [ 5 Points ]', async () => {
+            await page.goto(host);
+            await page.waitForTimeout(interval);
+
+            expect(await page.isVisible('text=Lorem ipsum dolor sit amet, consectetur adipiscing elit, sed do eiusmod.')).to.be.true;
+        });
+    });
+
+    describe('Dashboard Page [ 15 Points ]', () => {
+        it('Show Dashboard page - welcome message [ 2.5 Points ]', async () => {
+            await page.goto(host);
+            await page.waitForTimeout(interval);
+            await page.click('text=Dashboard');
+            await page.waitForTimeout(interval);
+            expect(await page.isVisible('text=Dashboard')).to.be.true;
+            expect(await page.isVisible('text=Services for every animal')).to.be.true;
+        });
+
+        it('Check Dashboard page with 0 pets [ 2.5 Points ]', async () => {
             const { get } = await handle(endpoints.catalog);
             get([]);
 
             await page.goto(host);
             await page.waitForTimeout(interval);
+            await page.click('text=Dashboard');
+            await page.waitForTimeout(interval);
 
-            const visible = await page.isVisible('text=No Events Yet...');
+            const visible = await page.isVisible('text=No pets in dashboard');
             expect(visible).to.be.true;
         });
 
-        it('Check home page with 2 theaters [ 2.5 Points ]', async () => {
+        it('Check dashboard page with 2 pets [ 2.5 Points ]', async () => {
             const { get } = await handle(endpoints.catalog);
             get(mockData.catalog.slice(0, 2));
             const data = mockData.catalog.slice(0, 2);
 
             await page.goto(host);
             await page.waitForTimeout(interval);
+            await page.click('text=Dashboard');
+            await page.waitForTimeout(interval);
 
-            await page.waitForSelector('#events');
-            const names = await page.$$eval('.eventsInfo .title', t => t.map(s => s.textContent));
+            await page.waitForSelector('.animals-dashboard');
+            const names = await page.$$eval('.animals-board .name', t => t.map(s => s.textContent));
 
             expect(names.length).to.equal(2);
-            expect(names[0]).to.contains(`${data[0].title}`);
-            expect(names[1]).to.contains(`${data[1].title}`);
+            expect(names[0]).to.contains(`${data[0].name}`);
+            expect(names[1]).to.contains(`${data[1].name}`);
         });
 
         it('Show details [ 2.5 Points ]', async () => {
             await page.goto(host);
             await page.waitForTimeout(interval);
+            await page.click('text=Dashboard');
+            await page.waitForTimeout(interval);
 
             expect(await page.isVisible('text="Details"')).to.be.true;
         });
 
-        it('Check home page info [ 5 Points ]', async () => {
+        it('Check dashboard page Info [ 5 Points ]', async () => {
             const { get } = await handle(endpoints.catalog);
             get(mockData.catalog.slice(0, 1));
             const data = mockData.catalog.slice(0, 1);
@@ -254,14 +276,15 @@ describe('E2E tests', function () {
             await page.goto(host);
             await page.waitForTimeout(interval);
 
-            await page.waitForSelector('#events');
-            const names = await page.$$eval('.eventsInfo .title', t => t.map(s => s.textContent));
-            const date = await page.$$eval('.eventsInfo .date', t => t.map(s => s.textContent));
-            const author = await page.$$eval('.eventsInfo .author', t => t.map(s => s.textContent));
+            await page.click('text=Dashboard');
+            await page.waitForTimeout(interval);
 
-            expect(names).to.contains(`${data[0].title}`);
-            expect(date).to.contains(`${data[0].date}`);
-            expect(author).to.contains(`${data[0].author}`);
+            await page.waitForSelector('.animals-dashboard');
+            const names = await page.$$eval('.animals-board .name', t => t.map(s => s.textContent));
+            const date = await page.$$eval('.animals-board .breed', t => t.map(s => s.textContent));
+
+            expect(names).to.contains(`${data[0].name}`);
+            expect(date).to.contains(`${data[0].breed}`);
         });
     });
 
@@ -285,7 +308,7 @@ describe('E2E tests', function () {
             const { post } = await handle(endpoints.create);
             const isCalled = post().isHandled;
 
-            await page.click('text=Create Event');
+            await page.click('text=Create Postcard');
             await page.waitForTimeout(interval);
             await page.waitForSelector('form');
 
@@ -301,15 +324,15 @@ describe('E2E tests', function () {
             const { post } = await handle(endpoints.create);
             const { onRequest } = post();
 
-            await page.click('text=Create Event');
+            await page.click('text=Create Postcard');
             await page.waitForTimeout(interval);
 
             await page.waitForSelector('form');
-            await page.fill('[name="title"]', data.title);
-            await page.fill('[name="date"]', data.date);
-            await page.fill('[name="author"]', data.author);
-            await page.fill('[name="description"]', data.description);
-            await page.fill('[name="imageUrl"]', data.imageUrl);
+            await page.fill('[name="name"]', data.name);
+            await page.fill('[name="breed"]', data.breed);
+            await page.fill('[name="age"]', data.age);
+            await page.fill('[name="weight"]', data.weight);
+            await page.fill('[name="image"]', data.image);
 
             const [request] = await Promise.all([
                 onRequest(),
@@ -318,11 +341,11 @@ describe('E2E tests', function () {
 
             const postData = JSON.parse(request.postData());
 
-            expect(postData.title).to.equal(data.title);
-            expect(postData.date).to.equal(data.date);
-            expect(postData.author).to.equal(data.author);
-            expect(postData.description).to.equal(data.description);
-            expect(postData.imageUrl).to.equal(data.imageUrl);
+            expect(postData.name).to.equal(data.name);
+            expect(postData.breed).to.equal(data.breed);
+            expect(postData.age).to.equal(data.age);
+            expect(postData.weight).to.equal(data.weight);
+            expect(postData.image).to.equal(data.image);
 
         });
 
@@ -333,26 +356,29 @@ describe('E2E tests', function () {
             get(data);
 
             await page.waitForTimeout(interval);
-            const { get: ownLikes } = await handle(endpoints.own(data._id, user._id));
-            const { get: totalLikes } = await handle(endpoints.total(data._id));
-            ownLikes(0);
-            totalLikes(5);
+            await page.click('text=Dashboard');
+
+            await page.waitForTimeout(interval);
+            const { get: own } = await handle(endpoints.own(data._id, user._id));
+            const { get: total } = await handle(endpoints.total(data._id));
+            own(0);
+            total(5);
 
             await page.waitForTimeout(interval);
 
-            await page.waitForSelector('#events');
-            await page.click(`.theaters-container > .eventsInfo:has-text("${data.title}") >> .btn-details`)
+            await page.waitForSelector('.animals-dashboard');
+            await page.click(`.animals-board:has-text("${data.name}") >> .btn`)
 
             await page.waitForTimeout(interval);
 
-            const names = await page.$$eval('.detailsInfo h1', t => t.map(s => s.textContent));
-            const date = await page.$$eval('.details h4', t => t.map(s => s.textContent));
-            const description = await page.$$eval('.details p', t => t.map(s => s.textContent));
+            const name = await page.$$eval('.animalInfo h1', t => t.map(s => s.textContent));
+            const breed = await page.$$eval('.animalInfo h3', t => t.map(s => s.textContent));
+            const info = await page.$$eval('.animalInfo h4', t => t.map(s => s.textContent));
 
-            expect(names).to.contains(`Title: ${data.title}`);
-            expect(date[0]).to.contains(`Date: ${data.date}`);
-            expect(date[1]).to.contains(`Author: ${data.author}`);
-            expect(description).to.contains(`${data.description}`);
+            expect(name).to.contains(`Name: ${data.name}`);
+            expect(breed).to.contains(`Breed: ${data.breed}`);
+            expect(info[0]).to.contains(`Age: ${data.age}`);
+            expect(info[1]).to.contains(`Weight: ${data.weight}`);
         });
 
         it('Non-author does NOT see delete and edit buttons [ 2.5 Points ]', async () => {
@@ -362,14 +388,17 @@ describe('E2E tests', function () {
             get(data);
 
             await page.waitForTimeout(interval);
-            const { get: ownLikes } = await handle(endpoints.own(data._id, user._id));
-            const { get: totalLikes } = await handle(endpoints.total(data._id));
-            ownLikes(0);
-            totalLikes(5);
-            await page.waitForSelector('#events');
+            await page.click('text=Dashboard');
+            await page.waitForTimeout(interval);
+            const { get: own } = await handle(endpoints.own(data._id, user._id));
+            const { get: total } = await handle(endpoints.total(data._id));
+            own(0);
+            total(5);
+
+            await page.waitForSelector('.animals-dashboard');
             await page.waitForTimeout(interval);
 
-            await page.click(`.theaters-container > .eventsInfo:has-text("${data.title}") >> .btn-details`)
+            await page.click(`.animals-board:has-text("${data.name}") >> .btn`)
 
             expect(await page.isVisible('text="Delete"')).to.be.false;
             expect(await page.isVisible('text="Edit"')).to.be.false;
@@ -382,15 +411,17 @@ describe('E2E tests', function () {
             get(data);
 
             await page.waitForTimeout(interval);
-            const { get: ownLikes } = await handle(endpoints.own(data._id, user._id));
-            const { get: totalLikes } = await handle(endpoints.total(data._id));
-            ownLikes(0);
-            totalLikes(5);
+            await page.click('text=Dashboard');
+            await page.waitForTimeout(interval);
+            const { get: own } = await handle(endpoints.own(data._id, user._id));
+            const { get: total } = await handle(endpoints.total(data._id));
+            own(0);
+            total(5);
 
             await page.waitForTimeout(interval);
 
-            await page.waitForSelector('#events');
-            await page.click(`.theaters-container > .eventsInfo:has-text("${data.title}") >> .btn-details`)
+            await page.waitForSelector('.animals-dashboard');
+            await page.click(`.animals-board:has-text("${data.name}") >> .btn`)
 
             await page.waitForTimeout(interval);
 
@@ -405,27 +436,29 @@ describe('E2E tests', function () {
             get(data);
 
             await page.waitForTimeout(interval);
-            const { get: ownLikes } = await handle(endpoints.own(data._id, user._id));
-            const { get: totalLikes } = await handle(endpoints.total(data._id));
-            ownLikes(0);
-            totalLikes(5);
+            await page.click('text=Dashboard');
+            await page.waitForTimeout(interval);
+            const { get: own } = await handle(endpoints.own(data._id, user._id));
+            const { get: total } = await handle(endpoints.total(data._id));
+            own(0);
+            total(5);
 
             await page.waitForTimeout(interval);
 
-            await page.waitForSelector('#events');
-            await page.click(`.theaters-container > .eventsInfo:has-text("${data.title}") >> .btn-details`)
+            await page.waitForSelector('.animals-dashboard');
+            await page.click(`.animals-board:has-text("${data.name}") >> .btn`)
 
             await page.click('text=Edit');
             await page.waitForTimeout(interval);
 
             await page.waitForSelector('form');
 
-            const inputs = await page.$$eval('.theater-form input, textarea', t => t.map(i => i.value));
-            expect(inputs[0]).to.contains(data.title);
-            expect(inputs[1]).to.contains(data.date);
-            expect(inputs[2]).to.contains(data.author);
-            expect(inputs[3]).to.contains(data.description);
-            expect(inputs[4]).to.contains(data.imageUrl);
+            const inputs = await page.$$eval('.editForm input', t => t.map(i => i.value));
+            expect(inputs[0]).to.contains(data.name);
+            expect(inputs[1]).to.contains(data.breed);
+            expect(inputs[2]).to.contains(data.age);
+            expect(inputs[3]).to.contains(data.weight);
+            expect(inputs[4]).to.contains(data.image);
 
         });
 
@@ -437,24 +470,28 @@ describe('E2E tests', function () {
             const { isHandled } = put();
 
             await page.waitForTimeout(interval);
-            const { get: ownLikes } = await handle(endpoints.own(data._id, user._id));
-            const { get: totalLikes } = await handle(endpoints.total(data._id));
-            ownLikes(0);
-            totalLikes(5);
+            await page.click('text=Dashboard');
             await page.waitForTimeout(interval);
-            await page.waitForSelector('#events');
-            await page.click(`.theaters-container > .eventsInfo:has-text("${data.title}") >> .btn-details`)
+
+            const { get: own } = await handle(endpoints.own(data._id, user._id));
+            const { get: total } = await handle(endpoints.total(data._id));
+            own(0);
+            total(5);
+
+            await page.waitForTimeout(interval);
+            await page.waitForSelector('.animals-dashboard');
+            await page.click(`.animals-board:has-text("${data.name}") >> .btn`)
 
             await page.click('text=Edit');
             await page.waitForTimeout(interval);
 
             await page.waitForSelector('form');
 
-            await page.fill('[name="title"]', '');
-            await page.fill('[name="date"]', '');
-            await page.fill('[name="author"]', '');
-            await page.fill('[name="description"]', '');
-            await page.fill('[name="imageUrl"]', '');
+            await page.fill('[name="name"]', '');
+            await page.fill('[name="breed"]', '');
+            await page.fill('[name="age"]', '');
+            await page.fill('[name="weight"]', '');
+            await page.fill('[name="image"]', '');
 
             await page.click('[type="submit"]');
             await page.waitForTimeout(interval);
@@ -471,22 +508,26 @@ describe('E2E tests', function () {
             const { onRequest } = put();
 
             await page.waitForTimeout(interval);
-            const { get: ownLikes } = await handle(endpoints.own(data._id, user._id));
-            const { get: totalLikes } = await handle(endpoints.total(data._id));
-            ownLikes(0);
-            totalLikes(5);
+            await page.click('text=Dashboard');
+
             await page.waitForTimeout(interval);
-            await page.waitForSelector('#events');
-            await page.click(`.theaters-container > .eventsInfo:has-text("${data.title}") >> .btn-details`)
+            const { get: own } = await handle(endpoints.own(data._id, user._id));
+            const { get: total } = await handle(endpoints.total(data._id));
+            own(0);
+            total(5);
+
+            await page.waitForTimeout(interval);
+            await page.waitForSelector('.animals-dashboard');
+            await page.click(`.animals-board:has-text("${data.name}") >> .btn`)
 
             await page.click('text=Edit');
             await page.waitForTimeout(interval);
 
             await page.waitForSelector('form');
 
-            await page.fill('[name="title"]', data.title + 'edit');
-            await page.fill('[name="author"]', data.author + 'edit');
-            await page.fill('[name="description"]', data.description + 'edit');
+            await page.fill('[name="name"]', data.name + 'edit');
+            await page.fill('[name="breed"]', data.breed + 'edit');
+            await page.fill('[name="age"]', data.age + 'edit');
 
             const [request] = await Promise.all([
                 onRequest(),
@@ -495,9 +536,9 @@ describe('E2E tests', function () {
 
             const postData = JSON.parse(request.postData());
 
-            expect(postData.title).to.contains(data.title + 'edit');
-            expect(postData.author).to.contains(data.author + 'edit');
-            expect(postData.description).to.contains(data.description + 'edit');
+            expect(postData.name).to.contains(data.name + 'edit');
+            expect(postData.breed).to.contains(data.breed + 'edit');
+            expect(postData.age).to.contains(data.age + 'edit');
         });
 
         it('Delete makes correct API call for logged in user [ 10 Points ]', async () => {
@@ -509,12 +550,16 @@ describe('E2E tests', function () {
             const { onResponse, isHandled } = del();
 
             await page.waitForTimeout(interval);
-            const { get: ownLikes } = await handle(endpoints.own(data._id, user._id));
-            const { get: totalLikes } = await handle(endpoints.total(data._id));
-            ownLikes(0);
-            totalLikes(5);
-            await page.waitForSelector('#events');
-            await page.click(`.theaters-container > .eventsInfo:has-text("${data.title}") >> .btn-details`)
+            await page.click('text=Dashboard');
+            await page.waitForTimeout(interval);
+
+            const { get: own } = await handle(endpoints.own(data._id, user._id));
+            const { get: total } = await handle(endpoints.total(data._id));
+            own(0);
+            total(5);
+
+            await page.waitForSelector('.animals-dashboard');
+            await page.click(`.animals-board:has-text("${data.name}") >> .btn`)
 
             await page.click('text=Delete');
 
@@ -529,70 +574,9 @@ describe('E2E tests', function () {
 
     });
 
-    describe('User Profile Page [ 10 Points ]', async () => {
+    describe('BONUS : Donate functionality  [ 15 Points ]', async () => {
 
-        // Login user
-        beforeEach(async () => {
-            const data = mockData.users[0];
-            await page.goto(host);
-            await page.waitForTimeout(interval);
-            await page.click('text=Login');
-            await page.waitForTimeout(interval);
-            await page.waitForSelector('form');
-            await page.fill('[name="email"]', data.email);
-            await page.fill('[name="password"]', data.password);
-            await page.click('[type="submit"]');
-            await page.waitForTimeout(interval);
-        });
-
-        it('Check profile page for with 0 theaters [ 2.5 Points ]', async () => {
-            const { get } = await handle(endpoints.profile(mockData.users[0]._id));
-            get([]);
-
-            await page.click('text=Profile');
-            await page.waitForTimeout(interval);
-
-            const visible = await page.isVisible('text=This user has no events yet!');
-            expect(visible).to.be.true;
-        });
-
-        it('Check profile page with 2 theaters [ 5 Points ]', async () => {
-            const { get } = await handle(endpoints.profile(mockData.users[0]._id));
-            get(mockData.catalog.slice(0, 2));
-            const data = mockData.catalog.slice(0, 2);
-
-            await page.click('text=Profile');
-            await page.waitForTimeout(interval);
-
-            const titles = await page.$$eval('.board .event-info h2', t => t.map(s => s.textContent));
-
-            expect(titles.length).to.equal(2);
-            expect(titles[0]).to.contains(`${data[0].title}`);
-            expect(titles[1]).to.contains(`${data[1].title}`);
-        });
-
-        it('Check profile page information [ 2.5 Points ]', async () => {
-            const { get } = await handle(endpoints.profile(mockData.users[0]._id));
-            get(mockData.catalog.slice(0, 1));
-            const data = mockData.catalog.slice(0, 1);
-            const user = mockData.users[0]
-
-            await page.click('text=Profile');
-            await page.waitForTimeout(interval);
-
-            const titles = await page.$$eval('.board .event-info h2', t => t.map(s => s.textContent));
-            const date = await page.$$eval('.board .event-info h6', t => t.map(s => s.textContent));
-            const email = await page.$$eval('.userInfo h2', t => t.map(s => s.textContent));
-
-            expect(titles[0]).to.contains(`${data[0].title}`);
-            expect(date[0]).to.contains(`${data[0].date}`);
-            expect(email[0]).to.contains(`${user.email}`);
-        });
-    });
-
-    describe('BONUS : Like functionality  [ 15 Points ]', async () => {
-
-        it('Like button is NOT visible for guest users [ 2.5 Points ]', async () => {
+        it('Donate button is NOT visible for guest users [ 2.5 Points ]', async () => {
             await page.goto(host);
             await page.waitForTimeout(interval);
 
@@ -601,16 +585,18 @@ describe('E2E tests', function () {
             get(data);
 
             await page.waitForTimeout(interval);
+            await page.click('text=Dashboard');
+            await page.waitForTimeout(interval);
 
-            await page.waitForSelector('#events');
-            await page.click(`.theaters-container > .eventsInfo:has-text("${data.title}") >> .btn-details`)
+            await page.waitForSelector('.animals-dashboard');
+            await page.click(`.animals-board:has-text("${data.name}") >> .btn`)
 
             await page.waitForTimeout(interval);
 
-            expect(await page.isVisible('.btn-like')).to.be.false;
+            expect(await page.isVisible('.donate')).to.be.false;
         });
 
-        it('Like button is visible for the non-creator user [ 2.5 Points ]', async () => {
+        it('Donate button is visible for the non-creator user [ 2.5 Points ]', async () => {
             // Login user
             const user = mockData.users[0];
             const data = mockData.catalog[2];
@@ -625,19 +611,22 @@ describe('E2E tests', function () {
             await page.click('[type="submit"]');
 
             await page.waitForTimeout(interval);
-            const { get: ownLikes } = await handle(endpoints.own(data._id, user._id));
-            const { get: totalLikes } = await handle(endpoints.total(data._id));
-            ownLikes(0);
-            totalLikes(5);
+            await page.click('text=Dashboard');
 
-            await page.waitForSelector('#events');
-            await page.click(`.theaters-container > .eventsInfo:has-text("${data.title}") >> .btn-details`);
+            await page.waitForTimeout(interval);
+            const { get: own } = await handle(endpoints.own(data._id, user._id));
+            const { get: total } = await handle(endpoints.total(data._id));
+            own(0);
+            total(5);
+
+            await page.waitForSelector('.animals-dashboard');
+            await page.click(`.animals-board:has-text("${data.name}") >> .btn`);
             await page.waitForTimeout(interval);
 
-            expect(await page.isVisible('.btn-like')).to.be.true;
+            expect(await page.isVisible('.donate')).to.be.true;
         });
 
-        it('Like button is NOT visible for the creator [ 2.5 Points ]', async () => {
+        it('Donate button is NOT visible for the creator [ 2.5 Points ]', async () => {
             // Login user
             const user = mockData.users[0];
             const data = mockData.catalog[0];
@@ -652,19 +641,21 @@ describe('E2E tests', function () {
             await page.click('[type="submit"]');
 
             await page.waitForTimeout(interval);
+            await page.click('text=Dashboard');
+            await page.waitForTimeout(interval);
 
-            const { get: ownLikes } = await handle(endpoints.own(data._id, user._id));
-            const { get: totalLikes } = await handle(endpoints.total(data._id));
-            ownLikes(0);
-            totalLikes(5);
+            const { get: own } = await handle(endpoints.own(data._id, user._id));
+            const { get: total } = await handle(endpoints.total(data._id));
+            own(0);
+            total(5);
 
-            await page.waitForSelector('#events');
-            await page.click(`.theaters-container > .eventsInfo:has-text("${data.title}") >> .btn-details`)
+            await page.waitForSelector('.animals-dashboard');
+            await page.click(`.animals-board:has-text("${data.name}") >> .btn`)
 
-            expect(await page.isVisible('btn-like')).to.be.false;
+            expect(await page.isVisible('.donate')).to.be.false;
         });
 
-        it('Like button should be hidden(not visible) after a click on it [ 2.5 Points ]', async () => {
+        it('Donate button should be hidden(not visible) after a click on it [ 2.5 Points ]', async () => {
             // Login user
             const user = mockData.users[0];
             const data = mockData.catalog[2];
@@ -677,39 +668,40 @@ describe('E2E tests', function () {
             await page.fill('[name="email"]', user.email);
             await page.fill('[name="password"]', user.password);
             await page.click('[type="submit"]');
-
+            
+            await page.waitForTimeout(interval);
+            await page.click('text=Dashboard');
             await page.waitForTimeout(interval);
 
-            const { get: ownLikes } = await handle(endpoints.own(data._id, user._id));
-            const { get: totalLikes } = await handle(endpoints.total(data._id));
-            const { post } = await handle(endpoints.like, { post: mockData.likes[2] });
+            const { get: own } = await handle(endpoints.own(data._id, user._id));
+            const { get: total } = await handle(endpoints.total(data._id));
+            const { post } = await handle(endpoints.donation, { post: mockData.donation[2] });
             const { onRequest } = post();
+            own(0);
+            total(5);
 
-            ownLikes(0);
-            totalLikes(5);
             await page.waitForTimeout(interval);
 
-            await page.waitForSelector('#events');
-            await page.click(`.theaters-container > .eventsInfo:has-text("${data.title}") >> .btn-details`)
+            await page.waitForSelector('.animals-dashboard');
+            await page.click(`.animals-board:has-text("${data.name}") >> .btn`)
             await page.waitForTimeout(interval);
-            expect(await page.isVisible('.btn-like')).to.be.true;
-            ownLikes(1)
-            totalLikes(6)
+            expect(await page.isVisible('.donate')).to.be.true;
+            own(1)
+            total(6)
             await page.waitForTimeout(interval);
 
             const [request] = await Promise.all([
                 onRequest,
-                page.click('.btn-like')
+                page.click('.donate')
             ]);
 
-            await page.waitForTimeout(interval);
+            await page.waitForTimeout(500000000);
 
-            expect(await page.isVisible('.btn-like')).to.be.false;
-
+            expect(await page.isVisible('.donate')).to.be.false;
 
         });
 
-        it('Like button should increase total likes by 1 after a click on it [ 5 Points ]', async () => {
+        it('Donate button should increase total donation by 100 after a click on it [ 5 Points ]', async () => {
             // Login user
             const user = mockData.users[0];
             const data = mockData.catalog[2];
@@ -721,36 +713,39 @@ describe('E2E tests', function () {
             await page.fill('[name="email"]', user.email);
             await page.fill('[name="password"]', user.password);
             await page.click('[type="submit"]');
+
+            await page.waitForTimeout(interval);
+            await page.click('text=Dashboard');
             await page.waitForTimeout(interval);
 
-            const { get: ownLikes } = await handle(endpoints.own(data._id, user._id));
-            const { get: totalLikes } = await handle(endpoints.total(data._id));
-            const { post } = await handle(endpoints.like, { post: mockData.likes[2] });
+            const { get: own } = await handle(endpoints.own(data._id, user._id));
+            const { get: total } = await handle(endpoints.total(data._id));
+            const { post } = await handle(endpoints.donation, { post: mockData.donation[2] });
             const { onRequest } = post();
             await page.waitForTimeout(interval);
-
-            ownLikes(0);
-            totalLikes(5);
+            own(0);
+            total(5);
+            
             await page.waitForTimeout(interval);
-            await page.waitForSelector('#events');
-            await page.click(`.theaters-container > .eventsInfo:has-text("${data.title}") >> .btn-details`)
+            await page.waitForSelector('.animals-dashboard');
+            await page.click(`.animals-board:has-text("${data.name}") >> .btn`)
             await page.waitForTimeout(interval);
 
-            let likes = await page.$$eval('.likes', t => t.map(s => s.textContent));
-            expect(likes[0]).to.contains('Likes: 5');
-            ownLikes(1)
-            totalLikes(6)
+            let likes = await page.$$eval('.donation', t => t.map(s => s.textContent));
+            expect(likes[0]).to.contains('Donation: 500$');
+            own(1)
+            total(6)
             await page.waitForTimeout(interval);
 
             const [request] = await Promise.all([
                 onRequest(),
-                page.click('.btn-like')
+                page.click('.donate')
             ]);
 
             await page.waitForTimeout(interval);
 
-            likes = await page.$$eval('.likes', t => t.map(s => s.textContent));
-            expect(likes[0]).to.contains('Likes: 6');
+            likes = await page.$$eval('.donation', t => t.map(s => s.textContent));
+            expect(likes[0]).to.contains('Donation: 600$');
             await page.waitForTimeout(interval);
 
         });

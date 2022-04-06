@@ -11,6 +11,7 @@ import { detailsView } from './views/detailsView.js';
 import { createView } from './views/createView.js';
 import { editView } from './views/editView.js';
 import { deleteView } from './views/deleteView.js';
+import { searchView } from './views/searchView.js';
 
 page(authMiddleware);
 page(renderNavigationMiddleware);
@@ -25,5 +26,6 @@ page('/create', createView);
 page('/albums/:id', detailsView);
 page('/albums/:id/edit', editView);
 page('/albums/:id/delete', deleteView);
+page('/search', searchView);
 
 page.start();

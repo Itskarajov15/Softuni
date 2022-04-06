@@ -8,11 +8,15 @@ const creatorLinks = (bookId) => html`
     <a class="button" href="/details/${bookId}/delete">Delete</a>
 `;
 
-const nonCreatorLink = (bookId) => html`
-    <a class="button" href="/details/${bookId}/like">Like</a>
-`;
+const likeControlsTemplate = (showLikeButton, onLike) => {
+    if (showLikeButton) {
+        return html`<a @click=${onLike} class="button" href="javascript:void(0)">Like</a>`;
+    } else {
+        return null;
+    }
+}
 
-const detailsTemplate = (book, isCreator, user) => html`
+const detailsTemplate = (book, isCreator, showLikeButton, onLike, likes) => html`
     <section id="details-page" class="details">
         <div class="book-information">
             <h3>${book.title}</h3>
@@ -24,14 +28,11 @@ const detailsTemplate = (book, isCreator, user) => html`
                     : nothing
                 }
 
-                ${user && !isCreator
-                    ? nonCreatorLink(book._id)
-                    : nothing
-                }
+                ${likeControlsTemplate(showLikeButton, onLike)}
 
                 <div class="likes">
                     <img class="hearts" src="/images/heart.png">
-                    <span id="total-likes">Likes: 0</span>
+                    <span id="total-likes">Likes: ${likes}</span>
                 </div>
             </div>
         </div>
@@ -43,8 +44,21 @@ const detailsTemplate = (book, isCreator, user) => html`
 `;
 
 export const detailsView = async (ctx) => {
-    const book = await bookService.getBook(ctx.params.id);
     const user = authService.getUser();
 
-    ctx.render(detailsTemplate(book, Boolean(user && book._ownerId == user._id), user));
+    const [book, likes, hasLike] = await Promise.all([
+        bookService.getBook(ctx.params.id),
+        bookService.getAllLikesByBookId(ctx.params.id),
+        user ? bookService.getMyLike(ctx.params.id, user._id) : 0
+    ]);
+
+    const isCreator = Boolean(user && book._ownerId == user._id);
+    const showLikeButton = user != null && isCreator == false && hasLike == false;
+
+    const onLike = async () => {
+        await bookService.likeBook(ctx.params.id);
+        ctx.page.redirect(`/details/${ctx.params.id}`);
+    }
+
+    ctx.render(detailsTemplate(book, isCreator, showLikeButton, onLike, likes));
 }
