@@ -11,7 +11,7 @@ SELECT TOP(30) CountryName, [Population]
 			 CountryName ASC
 
 --Display the country name, country code and information about its currency: either "Euro" or "Not Euro" and sort them
-SELECT CountryName, CountryCode, CurrencyCode,
+SELECT CountryName, CountryCode,
 	CASE
 		WHEN CurrencyCode = 'EUR' THEN 'Euro'
 		ELSE 'Not Euro'
