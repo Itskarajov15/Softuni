@@ -46,3 +46,28 @@ SELECT TOP(5)
 	JOIN Departments d ON e.DepartmentID = d.DepartmentID
 	WHERE e.Salary > 15000
 	ORDER BY d.DepartmentID ASC
+
+/*
+Select EmployeeID and FirstName of employees without a project
+*/
+SELECT TOP(3)
+	   e.EmployeeID,
+       e.FirstName
+	FROM Employees e
+	LEFT JOIN EmployeesProjects ep ON ep.EmployeeID = e.EmployeeID
+	WHERE ep.ProjectID IS NULL
+	ORDER BY e.EmployeeID ASC
+
+/*
+Select FirstName, LastName, HireDate, DeptName of employees hired after 1.1.1999 and are from either 
+'Sales' or 'Finance'
+*/
+SELECT e.FirstName,
+	   e.LastName,
+	   e.HireDate,
+	   d.[Name] AS DeptName
+	FROM Employees e
+	JOIN Departments d ON e.DepartmentID = d.DepartmentID
+	WHERE e.HireDate > '1999-01-01' AND
+		d.[Name] IN ('Sales', 'Finance')
+	ORDER BY e.HireDate ASC
