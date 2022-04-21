@@ -71,3 +71,76 @@ SELECT e.FirstName,
 	WHERE e.HireDate > '1999-01-01' AND
 		d.[Name] IN ('Sales', 'Finance')
 	ORDER BY e.HireDate ASC
+
+/*
+Select first 5 employees with a project which has started after 13.08.2002 and it is still going
+*/
+SELECT TOP(5)
+		e.EmployeeID,
+		e.FirstName,
+		p.[Name] AS ProjectName
+	FROM Employees e
+	JOIN EmployeesProjects ep ON ep.EmployeeID = e.EmployeeID
+	JOIN Projects p ON p.ProjectID = ep.ProjectID
+	WHERE p.StartDate > 2002-08-13 AND p.EndDate IS NULL
+	ORDER BY EmployeeID
+
+/*
+Filter all projects of employee with id 24, if the project has started during or after 2005 return NULL
+*/
+SELECT e.EmployeeID,
+	   e.FirstName,
+	   CASE
+			WHEN DATEPART(YEAR, p.StartDate) >= 2005 THEN NULL
+			ELSE p.[Name]
+	   END AS ProjectName
+	FROM Employees e
+	JOIN EmployeesProjects ep ON ep.EmployeeID = e.EmployeeID
+	JOIN Projects p ON p.ProjectID = ep.ProjectID
+	WHERE e.EmployeeID = 24
+
+/*
+Filter all employees with a manager who has ID equals to 3 or 7. 
+Return all the rows, sorted by EmployeeID in ascending order.
+*/
+SELECT e.EmployeeID,
+	   e.FirstName,
+	   e.ManagerID,
+	   m.FirstName AS ManagerName
+	FROM Employees e
+	JOIN Employees m ON m.EmployeeID = e.ManagerID
+	WHERE e.ManagerID IN (3, 7)
+	ORDER BY e.EmployeeID
+
+/*
+Show first 50 employees with their managers and the departments they are in (show the departments of the employees).
+Order by EmployeeID.
+*/
+SELECT TOP(50)
+	   e.EmployeeID,
+	   CONCAT(e.FirstName, ' ', e.LastName) AS EmployeeName,
+	   CONCAT(m.FirstName, ' ', m.LastName) AS ManagerName,
+	   d.[Name] AS DepartmentName
+	FROM Employees e
+	JOIN Employees m ON m.EmployeeID = e.ManagerID
+	JOIN Departments d ON d.DepartmentID = e.DepartmentID
+	ORDER BY e.EmployeeID
+
+/*
+Write a query that returns the value of the lowest average salary of all departments.
+*/
+SELECT TOP(1)
+		(SELECT AVG(Salary)
+			FROM Employees e
+			WHERE DepartmentID = d.DepartmentID) AS MinAverageSalary
+	FROM Departments d
+	ORDER BY MinAverageSalary ASC
+
+/*
+Another solution of previous task
+*/
+SELECT TOP(1)
+		AVG(Salary) AS MinAverageSalary 
+	FROM Employees
+	GROUP BY DepartmentID
+	ORDER BY MinAverageSalary ASC
