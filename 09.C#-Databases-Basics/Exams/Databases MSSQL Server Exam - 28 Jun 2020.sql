@@ -104,8 +104,35 @@ SELECT c.Id,
 	ORDER BY c.Id ASC
 
 --
-SELECT COUNT(*) 
-	FROM Journeys
-	WHERE Purpose = 'Technical'
+SELECT COUNT(*) AS [count]
+	FROM Colonists c
+	JOIN TravelCards t ON t.ColonistId = c.Id
+	JOIN Journeys j ON j.Id = t.JourneyId
+	WHERE j.Purpose = 'Technical'
 
-SELECT * FROM Colonists
+--
+SELECT s.[Name],
+	   s.Manufacturer
+	FROM Spaceships s
+	LEFT JOIN Journeys j ON j.SpaceshipId = s.Id
+	LEFT JOIN TravelCards t ON t.JourneyId = j.Id
+	left JOIN Colonists c ON c.Id = t.ColonistId
+	WHERE 1989 < DATEPART(YEAR, c.BirthDate)
+	GROUP BY s.[Name], s.Manufacturer
+	ORDER BY s.[Name] ASC
+
+--
+SELECT p.[Name] AS PlanetName, COUNT(*) AS JourneysCount
+	FROM Planets p
+	JOIN Spaceports s ON s.PlanetId = p.Id
+	JOIN Journeys j ON j.DestinationSpaceportId = s.Id
+	GROUP BY p.[Name]
+	ORDER BY JourneysCount DESC, p.[Name] ASC
+
+--
+SELECT * FROM (SELECT t.JobDuringJourney,
+		c.[FirstName] + ' ' + c.LastName AS FullName,
+		DENSE_RANK() OVER (PARTITION BY t.JobDuringJourney ORDER BY c.BirthDate) AS [JobRank]
+	FROM Colonists c
+	JOIN TravelCards t ON t.ColonistId = c.Id) AS Ranked
+	WHERE JobRank = 2
