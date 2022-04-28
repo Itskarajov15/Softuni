@@ -61,3 +61,37 @@ BEGIN
 
 	RETURN @result
 END
+
+/*
+Write a stored procedure that receive as parameter level of salary (low, average or high) and print the names of 
+all employees that have given level of salary
+*/
+CREATE PROC usp_EmployeesBySalaryLevel (@SalaryLevel VARCHAR(10))
+AS
+	SELECT FirstName,
+	       LastName
+		FROM Employees
+		WHERE dbo.ufn_GetSalaryLevel(Salary) = @SalaryLevel
+GO
+
+/*
+Define a function that returns true or false depending on that if the word is a comprised of the given set of 
+letters
+*/
+CREATE OR ALTER FUNCTION ufn_IsWordComprised(@setOfLetters VARCHAR(MAX), @word VARCHAR(MAX))
+RETURNS BIT
+BEGIN
+	DECLARE @count INT = 1;
+
+	WHILE (@count <= LEN(@word))
+	BEGIN
+		DECLARE @currentLetter CHAR(1) = SUBSTRING(@word, @count, 1);
+
+		IF (CHARINDEX(@currentLetter, @setOfLetters) = 0)
+			RETURN 0
+
+		SET @count += 1;
+	END
+
+	RETURN 1
+END
