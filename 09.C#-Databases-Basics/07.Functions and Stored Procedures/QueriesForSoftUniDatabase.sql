@@ -78,7 +78,7 @@ GO
 Define a function that returns true or false depending on that if the word is a comprised of the given set of 
 letters
 */
-CREATE OR ALTER FUNCTION ufn_IsWordComprised(@setOfLetters VARCHAR(MAX), @word VARCHAR(MAX))
+CREATE FUNCTION ufn_IsWordComprised(@setOfLetters VARCHAR(MAX), @word VARCHAR(MAX))
 RETURNS BIT
 BEGIN
 	DECLARE @count INT = 1;
@@ -95,3 +95,36 @@ BEGIN
 
 	RETURN 1
 END
+
+/*
+Write a procedure which deletes all Employees from a given department. Delete these departments from the 
+Departments table too.
+*/
+CREATE PROC usp_DeleteEmployeesFromDepartment (@departmentId INT)
+AS
+ALTER TABLE Departments
+ALTER COLUMN ManagerID INT NULL
+
+DELETE FROM EmployeesProjects
+WHERE EmployeeID IN (SELECT EmployeeID FROM Employees WHERE DepartmentID = @departmentId)
+
+UPDATE Employees
+SET ManagerID = NULL
+WHERE EmployeeID IN (SELECT EmployeeID FROM Employees WHERE DepartmentID = @departmentId)
+
+UPDATE Employees
+SET ManagerID = NULL
+WHERE ManagerID IN (SELECT EmployeeID FROM Employees WHERE DepartmentID = @departmentId)
+
+UPDATE Departments
+SET ManagerID = NULL
+WHERE DepartmentID = @departmentId
+
+DELETE FROM Employees
+WHERE DepartmentID = @departmentId
+
+DELETE FROM Departments
+WHERE DepartmentID = @departmentId
+
+SELECT COUNT(*) FROM Employees WHERE DepartmentID = @departmentId
+GO
