@@ -136,3 +136,20 @@ SELECT * FROM (SELECT t.JobDuringJourney,
 	FROM Colonists c
 	JOIN TravelCards t ON t.ColonistId = c.Id) AS Ranked
 	WHERE JobRank = 2
+
+--
+CREATE FUNCTION udf_GetColonistsCount(@PlanetName VARCHAR(30))
+RETURNS INT
+BEGIN
+	DECLARE @count INT = (SELECT COUNT(*) 
+			FROM Colonists c
+			JOIN TravelCards tc ON c.Id = tc.ColonistId
+			JOIN Journeys j ON tc.JourneyId = j.Id
+			JOIN Spaceports s ON j.DestinationSpaceportId = s.Id
+			JOIN Planets p ON s.PlanetId = p.Id
+			WHERE p.[Name] = @PlanetName)
+			
+	RETURN @count;
+END
+
+SELECT dbo.udf_GetColonistsCount('Otroyphus')
