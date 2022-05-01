@@ -183,3 +183,70 @@ SELECT p.PartId,
 	LEFT JOIN Orders o ON o.JobId = j.JobId 
 	WHERE j.Status != 'Finished' AND p.StockQty + IIF(o.Delivered = 0, op.Quantity, 0)< pn.Quantity
 	ORDER BY p.PartId ASC
+
+--
+GO
+CREATE PROC usp_PlaceOrder(@JobId INT, @SerialNumber VARCHAR(50), @Quantity INT)
+AS
+	IF((SELECT [Status] FROM Jobs WHERE JobId = @JobId) = 'Finished')
+	BEGIN
+		THROW 50011, 'This job is not active!', 1
+	END
+
+	IF(@Quantity <= 0)
+	BEGIN
+		THROW 50012, 'Part quantity must be more than zero!', 1
+	END
+
+	IF((SELECT JobId FROM Jobs WHERE JobId = @JobId) IS NULL)
+	BEGIN
+		THROW 50013, 'Job not found!', 1
+	END
+
+	DECLARE @partId INT = (SELECT PartId FROM Parts WHERE SerialNumber = @SerialNumber);
+
+	IF(@partId IS NULL)
+	BEGIN
+		THROW 50014, 'Part not found!', 1
+	END
+
+	DECLARE @orderId INT = (SELECT OrderId FROM Orders 
+											WHERE JobId = @JobId)
+
+	IF(@orderId IS NULL)
+	BEGIN
+		INSERT INTO Orders (JobId, IssueDate)
+		VALUES
+		(@JobId, NULL)
+
+		SET @orderId = (SELECT OrderId FROM Orders WHERE JobId = @JobId)
+
+		INSERT INTO OrderParts (OrderId, PartId)
+		VALUES
+		(@orderId, @partId)
+	END
+	ELSE
+	BEGIN
+		DECLARE @part INT = (SELECT op.PartId 
+									FROM OrderParts op
+									JOIN Parts p ON op.PartId = p.PartId
+									WHERE p.SerialNumber = @SerialNumber)
+
+		IF(@part IS NOT NULL)
+		BEGIN
+			UPDATE OrderParts
+			SET Quantity += @Quantity
+			WHERE PartId = @part
+		END
+	END
+GO
+
+DECLARE @err_msg AS NVARCHAR(MAX);
+BEGIN TRY
+  EXEC usp_PlaceOrder 1, 'ZeroQuantity', 0
+END TRY
+
+BEGIN CATCH
+  SET @err_msg = ERROR_MESSAGE();
+  SELECT @err_msg
+END CATCH
