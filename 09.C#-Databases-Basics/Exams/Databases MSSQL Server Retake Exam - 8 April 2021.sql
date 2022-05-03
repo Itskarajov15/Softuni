@@ -130,3 +130,63 @@ SELECT CONCAT(e.FirstName, ' ', e.LastName) AS FullName, COUNT(r.Id) AS UsersCou
 	LEFT JOIN Reports r ON e.Id = r.EmployeeId
 	GROUP BY CONCAT(e.FirstName, ' ', e.LastName)
 	ORDER BY UsersCount DESC, FullName ASC
+
+--
+SELECT ISNULL(e.FirstName + ' ' + e.LastName, 'None') AS Employee,
+       ISNULL(d.[Name], 'None') AS Department,
+	   c.[Name] AS Category,
+	   r.[Description],
+	   FORMAT(r.OpenDate, 'dd.MM.yyyy') AS OpenDate,
+	   s.[Label] AS [Status],
+	   u.[Name] AS [User]
+	FROM Reports r
+	LEFT JOIN Categories c ON r.CategoryId = c.Id
+	LEFT JOIN [Status] s ON r.StatusId = s.Id
+	LEFT JOIN Employees e ON r.EmployeeId = e.Id	
+	LEFT JOIN Departments d ON e.DepartmentId = d.Id
+	LEFT JOIN Users u ON r.UserId = u.Id
+	ORDER BY e.FirstName DESC,
+	         e.LastName DESC,
+			 d.[Name] ASC,
+			 c.[Name] ASC,
+			 r.[Description] ASC,
+			 r.[OpenDate] ASC,
+			 s.[Label] ASC,
+			 u.[Name] ASC
+
+--
+CREATE FUNCTION udf_HoursToComplete(@StartDate DATETIME, @EndDate DATETIME)
+RETURNS INT
+BEGIN
+	IF(@StartDate IS NULL OR @EndDate IS NULL)
+	BEGIN
+		RETURN 0
+	END
+
+	RETURN DATEDIFF(HOUR, @StartDate, @EndDate)
+END
+
+--
+
+CREATE PROC usp_AssignEmployeeToReport(@EmployeeId INT, @ReportId INT)
+AS
+	DECLARE @categoryDepartmentId INT = (SELECT c.DepartmentId 
+											FROM Reports r
+											JOIN Categories c ON R.CategoryId = C.Id
+											WHERE r.Id = @ReportId)
+
+	DECLARE @employeeDepartmentId INT = (SELECT DepartmentId 
+											FROM Employees
+											WHERE Id = @EmployeeId)
+
+	IF(@categoryDepartmentId = @employeeDepartmentId)
+	BEGIN
+		UPDATE Reports
+		SET EmployeeId = @EmployeeId
+		WHERE Id = @ReportId
+	END
+	ELSE
+	BEGIN
+		THROW 50001, 'Employee doesn''t belong to the appropriate department!', 1;
+	END
+GO
