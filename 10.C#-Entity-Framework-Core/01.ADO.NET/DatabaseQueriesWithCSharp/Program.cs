@@ -43,11 +43,12 @@ namespace DatabaseQueriesWithCSharp
                 string query = "SELECT TOP(1) * FROM Employees ORDER BY Salary DESC";
                 SqlCommand sqlCommand = new SqlCommand(query, connection);
 
-                SqlDataReader sqlDataReader = sqlCommand.ExecuteReader();
-                
-                while(sqlDataReader.Read())
+                using (SqlDataReader sqlDataReader = sqlCommand.ExecuteReader())
                 {
-                    Console.WriteLine(sqlDataReader[1] + " " + sqlDataReader[2]);
+                    while (sqlDataReader.Read())
+                    {
+                        Console.WriteLine((string)sqlDataReader["FirstName"] + " " + (string)sqlDataReader["LastName"]);
+                    }
                 }
             }
         }
