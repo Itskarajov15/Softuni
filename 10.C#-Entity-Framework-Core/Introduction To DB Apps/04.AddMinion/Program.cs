@@ -18,21 +18,21 @@ namespace _04.AddMinion
             string town = minionInformation[3];
             string villainName = Console.ReadLine().Split(" ")[1];
 
-            var townId = GetTownId(town, connection);
+            int? townId = GetTownId(town, connection);
 
             if (townId == null)
             {
                 InsertTownIntoDatabase(town, connection);
             }
 
-            var villainId = GetVillainId(villainName, connection);
+            int? villainId = GetVillainId(villainName, connection);
 
             if (villainId == null)
             {
                 InsertVillainIntoDatabase(villainName, connection);
             }
 
-            InsertMinionIntoDatabase(name, age, town, connection);
+            InsertMinionIntoDatabase(name, age, townId, connection);
             InsertMinionToVillain(GetVillainId(villainName, connection), GetMinionId(name, connection), villainName, name, connection);
         }
 
@@ -46,24 +46,24 @@ namespace _04.AddMinion
             Console.WriteLine($"Successfully added {minioneName} to be minion of {villainName}.");
         }
 
-        private static object GetMinionId(string minionName, SqlConnection connection)
+        private static int? GetMinionId(string minionName, SqlConnection connection)
         {
             string minionIdQuery = "SELECT Id FROM Minions WHERE Name = @Name";
 
             using var MinionIdCommand = new SqlCommand(minionIdQuery, connection);
             MinionIdCommand.Parameters.AddWithValue("@Name", minionName);
 
-            return MinionIdCommand.ExecuteScalar();
+            return (int?)MinionIdCommand.ExecuteScalar();
         }
 
-        private static void InsertMinionIntoDatabase(string name, int age, string town, SqlConnection connection)
+        private static void InsertMinionIntoDatabase(string name, int age, int? townId, SqlConnection connection)
         {
             string insertMinionQuery = "INSERT INTO Minions (Name, Age, TownId) VALUES (@name, @age, @townId)";
 
             using var insertMinionCommand = new SqlCommand(insertMinionQuery, connection);
             insertMinionCommand.Parameters.AddWithValue("@name", name);
             insertMinionCommand.Parameters.AddWithValue("@age", age);
-            insertMinionCommand.Parameters.AddWithValue("@townId", town);
+            insertMinionCommand.Parameters.AddWithValue("@townId", townId);
             insertMinionCommand.ExecuteNonQuery();
         }
 
@@ -78,24 +78,24 @@ namespace _04.AddMinion
             Console.WriteLine($"Villain {villainName} was added to the database.");
         }
 
-        private static object GetVillainId(string villainName, SqlConnection connection)
+        private static int? GetVillainId(string villainName, SqlConnection connection)
         {
             string villainIdQuery = "SELECT Id FROM Villains WHERE Name = @Name";
 
             using var villainIdCommand = new SqlCommand(villainIdQuery, connection);
             villainIdCommand.Parameters.AddWithValue("@Name", villainName);
 
-            return villainIdCommand.ExecuteScalar();
+            return (int?)villainIdCommand.ExecuteScalar();
         }
 
-        private static object GetTownId(string town, SqlConnection connection)
+        private static int? GetTownId(string town, SqlConnection connection)
         {
             string townIdQuery = "SELECT Id FROM Towns WHERE Name = @townName";
 
             using var townIdCommand = new SqlCommand(townIdQuery, connection);
             townIdCommand.Parameters.AddWithValue("@townName", town);
 
-            return townIdCommand.ExecuteScalar();
+            return (int?)townIdCommand.ExecuteScalar();
         }
 
         private static void InsertTownIntoDatabase(string town, SqlConnection connection)
