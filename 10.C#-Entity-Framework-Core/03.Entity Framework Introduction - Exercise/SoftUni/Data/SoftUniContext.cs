@@ -1,12 +1,10 @@
 ﻿using System;
 using Microsoft.EntityFrameworkCore;
 using Microsoft.EntityFrameworkCore.Metadata;
+using SoftUni.Data;
+using SoftUni.Models;
 
-// Code scaffolded by EF Core assumes nullable reference types (NRTs) are not used or disabled.
-// If you have enabled NRTs for your project, then un-comment the following line:
-// #nullable disable
-
-namespace _01.Introduction.Models
+namespace SoftUni.Data
 {
     public partial class SoftUniContext : DbContext
     {
@@ -19,27 +17,25 @@ namespace _01.Introduction.Models
         {
         }
 
-        public virtual DbSet<Addresses> Addresses { get; set; }
-        public virtual DbSet<Departments> Departments { get; set; }
-        public virtual DbSet<Employees> Employees { get; set; }
-        public virtual DbSet<EmployeesProjects> EmployeesProjects { get; set; }
-        public virtual DbSet<MyTable> MyTable { get; set; }
-        public virtual DbSet<Projects> Projects { get; set; }
-        public virtual DbSet<Towns> Towns { get; set; }
-        public virtual DbSet<VEmployeesHiredAfter2000> VEmployeesHiredAfter2000 { get; set; }
+        public virtual DbSet<Address> Addresses { get; set; }
+        public virtual DbSet<Department> Departments { get; set; }
+        public virtual DbSet<Employee> Employees { get; set; }
+        public virtual DbSet<EmployeeProject> EmployeesProjects { get; set; }
+        public virtual DbSet<Project> Projects { get; set; }
+        public virtual DbSet<Town> Towns { get; set; }
 
         protected override void OnConfiguring(DbContextOptionsBuilder optionsBuilder)
         {
             if (!optionsBuilder.IsConfigured)
             {
 #warning To protect potentially sensitive information in your connection string, you should move it out of source code. See http://go.microsoft.com/fwlink/?LinkId=723263 for guidance on storing connection strings.
-                optionsBuilder.UseSqlServer("Server=.;Database=SoftUni;Integrated Security=true");
+                optionsBuilder.UseSqlServer("Server=.;Database=SoftUni;Integrated Security=True;");
             }
         }
 
         protected override void OnModelCreating(ModelBuilder modelBuilder)
         {
-            modelBuilder.Entity<Addresses>(entity =>
+            modelBuilder.Entity<Address>(entity =>
             {
                 entity.HasKey(e => e.AddressId);
 
@@ -58,7 +54,7 @@ namespace _01.Introduction.Models
                     .HasConstraintName("FK_Addresses_Towns");
             });
 
-            modelBuilder.Entity<Departments>(entity =>
+            modelBuilder.Entity<Department>(entity =>
             {
                 entity.HasKey(e => e.DepartmentId);
 
@@ -74,10 +70,11 @@ namespace _01.Introduction.Models
                 entity.HasOne(d => d.Manager)
                     .WithMany(p => p.Departments)
                     .HasForeignKey(d => d.ManagerId)
+                    .OnDelete(DeleteBehavior.ClientSetNull)
                     .HasConstraintName("FK_Departments_Employees");
             });
 
-            modelBuilder.Entity<Employees>(entity =>
+            modelBuilder.Entity<Employee>(entity =>
             {
                 entity.HasKey(e => e.EmployeeId);
 
@@ -110,7 +107,7 @@ namespace _01.Introduction.Models
                     .HasMaxLength(50)
                     .IsUnicode(false);
 
-                entity.Property(e => e.Salary).HasColumnType("money");
+                entity.Property(e => e.Salary).HasColumnType("decimal(15, 4)");
 
                 entity.HasOne(d => d.Address)
                     .WithMany(p => p.Employees)
@@ -129,7 +126,7 @@ namespace _01.Introduction.Models
                     .HasConstraintName("FK_Employees_Employees");
             });
 
-            modelBuilder.Entity<EmployeesProjects>(entity =>
+            modelBuilder.Entity<EmployeeProject>(entity =>
             {
                 entity.HasKey(e => new { e.EmployeeId, e.ProjectId });
 
@@ -150,45 +147,7 @@ namespace _01.Introduction.Models
                     .HasConstraintName("FK_EmployeesProjects_Projects");
             });
 
-            modelBuilder.Entity<MyTable>(entity =>
-            {
-                entity.HasNoKey();
-
-                entity.Property(e => e.AddressId).HasColumnName("AddressID");
-
-                entity.Property(e => e.DepartmentId).HasColumnName("DepartmentID");
-
-                entity.Property(e => e.EmployeeId)
-                    .HasColumnName("EmployeeID")
-                    .ValueGeneratedOnAdd();
-
-                entity.Property(e => e.FirstName)
-                    .IsRequired()
-                    .HasMaxLength(50)
-                    .IsUnicode(false);
-
-                entity.Property(e => e.HireDate).HasColumnType("smalldatetime");
-
-                entity.Property(e => e.JobTitle)
-                    .IsRequired()
-                    .HasMaxLength(50)
-                    .IsUnicode(false);
-
-                entity.Property(e => e.LastName)
-                    .IsRequired()
-                    .HasMaxLength(50)
-                    .IsUnicode(false);
-
-                entity.Property(e => e.ManagerId).HasColumnName("ManagerID");
-
-                entity.Property(e => e.MiddleName)
-                    .HasMaxLength(50)
-                    .IsUnicode(false);
-
-                entity.Property(e => e.Salary).HasColumnType("money");
-            });
-
-            modelBuilder.Entity<Projects>(entity =>
+            modelBuilder.Entity<Project>(entity =>
             {
                 entity.HasKey(e => e.ProjectId);
 
@@ -206,30 +165,13 @@ namespace _01.Introduction.Models
                 entity.Property(e => e.StartDate).HasColumnType("smalldatetime");
             });
 
-            modelBuilder.Entity<Towns>(entity =>
+            modelBuilder.Entity<Town>(entity =>
             {
                 entity.HasKey(e => e.TownId);
 
                 entity.Property(e => e.TownId).HasColumnName("TownID");
 
                 entity.Property(e => e.Name)
-                    .IsRequired()
-                    .HasMaxLength(50)
-                    .IsUnicode(false);
-            });
-
-            modelBuilder.Entity<VEmployeesHiredAfter2000>(entity =>
-            {
-                entity.HasNoKey();
-
-                entity.ToView("V_EmployeesHiredAfter2000");
-
-                entity.Property(e => e.FirstName)
-                    .IsRequired()
-                    .HasMaxLength(50)
-                    .IsUnicode(false);
-
-                entity.Property(e => e.LastName)
                     .IsRequired()
                     .HasMaxLength(50)
                     .IsUnicode(false);
