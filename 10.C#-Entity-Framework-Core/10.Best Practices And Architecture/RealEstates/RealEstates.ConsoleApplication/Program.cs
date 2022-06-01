@@ -8,6 +8,7 @@ namespace RealEstates.ConsoleApplication
     {
         static void Main(string[] args)
         {
+            Console.OutputEncoding = System.Text.Encoding.Unicode;
             var db = new ApplicationDbContext();
             db.Database.Migrate();
 
@@ -16,6 +17,7 @@ namespace RealEstates.ConsoleApplication
                 Console.WriteLine("Choose an option.");
                 Console.WriteLine("1. Property search");
                 Console.WriteLine("2. Most expensive districts");
+                Console.WriteLine("3. Most expensive districts");
                 Console.WriteLine("0. EXIT");
                 bool parsed = int.TryParse(Console.ReadLine(), out int option);
 
@@ -24,7 +26,7 @@ namespace RealEstates.ConsoleApplication
                     break;
                 }
 
-                if(parsed && option >= 1 && option <= 2)
+                if(parsed && option >= 1 && option <= 3)
                 {
                     switch (option)
                     {
@@ -34,6 +36,9 @@ namespace RealEstates.ConsoleApplication
                         case 2: 
                             MostExpensiveDistricts(db);
                             break;
+                        case 3:
+                            AveragePricePerSquareMeter(db);
+                            break;
                     }
 
                     Console.WriteLine("Press any key to continue...");
@@ -42,12 +47,18 @@ namespace RealEstates.ConsoleApplication
             }
         }
 
+        private static void AveragePricePerSquareMeter(ApplicationDbContext db)
+        {
+            IPropertiesService service = new PropertiesService(db);
+            Console.WriteLine($"Average price per square meter: {service.AveragePricePerSquareMeter():f2}");
+        }
+
         private static void MostExpensiveDistricts(ApplicationDbContext db)
         {
             Console.WriteLine("Count: ");
             int count = int.Parse(Console.ReadLine());
 
-            IDistrictsService service;
+            IDistrictsService service = new DistrictService(db);
             var districts = service.GetMostExpensiveDistricts(count);
 
             foreach (var district in districts)
@@ -60,11 +71,11 @@ namespace RealEstates.ConsoleApplication
         {
             Console.WriteLine("Min price:");
             int minPrice = int.Parse(Console.ReadLine());
-            Console.WriteLine("Min price:");
+            Console.WriteLine("Max price:");
             int maxPrice = int.Parse(Console.ReadLine());
-            Console.WriteLine("Min price:");
+            Console.WriteLine("Min size:");
             int minSize = int.Parse(Console.ReadLine());
-            Console.WriteLine("Min price:");
+            Console.WriteLine("Max size:");
             int maxSize = int.Parse(Console.ReadLine());
 
             IPropertiesService service = new PropertiesService(db);
