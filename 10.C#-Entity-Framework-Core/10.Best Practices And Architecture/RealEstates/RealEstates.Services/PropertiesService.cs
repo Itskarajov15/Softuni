@@ -1,10 +1,11 @@
-﻿using RealEstates.Data;
+﻿using AutoMapper.QueryableExtensions;
+using RealEstates.Data;
 using RealEstates.Models;
 using RealEstates.Services.Models;
 
 namespace RealEstates.Services
 {
-    public class PropertiesService : IPropertiesService
+    public class PropertiesService : BaseService, IPropertiesService
     {
         private readonly ApplicationDbContext dbContext;
 
@@ -17,6 +18,34 @@ namespace RealEstates.Services
         {
             return dbContext.Properties.Where(p => p.Price.HasValue)
                 .Average(x => x.Price / (decimal)x.Size) ?? 0;
+        }
+
+        public decimal AveragePricePerSquareMeter(int districtId)
+        {
+            return dbContext.Properties.Where(p => p.Price.HasValue && p.DistrictId == districtId)
+                .Average(x => x.Price / (decimal)x.Size) ?? 0;
+        }
+
+        public IEnumerable<PropertyInfoFullDataDto> GetFullData(int count)
+        {
+            var properties = dbContext.Properties
+                .Where(p => p.Floor.HasValue && p.Floor.Value > 1 &&
+                    p.Floor.Value <= 8 &&
+                    p.Year.HasValue && p.Year.Value > 2015)
+                .ProjectTo<PropertyInfoFullDataDto>(this.Mapper.ConfigurationProvider)
+                .OrderByDescending(x => x.Price)
+                .ThenBy(x => x.Size)
+                .ThenBy(x => x.Year)
+                .Take(count)
+                .ToList();
+
+            return properties;
+        }
+
+        public double AverageSize(int districtId)
+        {
+            return dbContext.Properties.Where(p => p.DistrictId == districtId)
+                .Average(x => x.Size);
         }
 
         public void Add(string district, int floor, int year, int maxFloor, int size, int yardSize, string propertyType, string buildingType, int price)
@@ -66,14 +95,7 @@ namespace RealEstates.Services
         {
             var properties = dbContext.Properties
                 .Where(p => p.Price >= minPrice && p.Price <= maxPrice && p.Size >= minSize && p.Size <= maxSize)
-                .Select(p => new PropertyInfoDto
-                {
-                    DistrictName = p.District.Name,
-                    Size = p.Size,
-                    Price = p.Price ?? 0,
-                    BuildingType = p.BuildingType.Name,
-                    PropertyType = p.Type.Name
-                })
+                .ProjectTo<PropertyInfoDto>(this.Mapper.ConfigurationProvider)
                 .ToList();
 
             return properties;
