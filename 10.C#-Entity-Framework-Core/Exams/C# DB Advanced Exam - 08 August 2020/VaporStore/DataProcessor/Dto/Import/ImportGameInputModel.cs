@@ -14,7 +14,7 @@ namespace VaporStore.DataProcessor.Dto.Import
         public decimal Price { get; set; }
 
         [Required]
-        public string ReleaseDate { get; set; }
+        public DateTime? ReleaseDate { get; set; }
 
         [Required]
         public string Developer { get; set; }
