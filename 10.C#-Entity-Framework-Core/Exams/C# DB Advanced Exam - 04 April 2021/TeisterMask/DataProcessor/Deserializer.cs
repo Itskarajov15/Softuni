@@ -8,6 +8,7 @@
     using System.Linq;
     using System.Text;
     using Data;
+    using Newtonsoft.Json;
     using TeisterMask.Data.Models;
     using TeisterMask.Data.Models.Enums;
     using TeisterMask.DataProcessor.ImportDto;
@@ -139,7 +140,48 @@
 
         public static string ImportEmployees(TeisterMaskContext context, string jsonString)
         {
-            throw new NotImplementedException();
+            var employees = JsonConvert.DeserializeObject<IEnumerable<ImportEmployeeInputModel>>(jsonString);
+            var sb = new StringBuilder();
+
+            foreach (var item in employees)
+            {
+                if (!IsValid(item))
+                {
+                    sb.AppendLine(ErrorMessage);
+                    continue;
+                }
+
+                var employee = new Employee
+                {
+                    Username = item.Username,
+                    Email = item.Email,
+                    Phone = item.Phone
+                };
+
+                var uniqueTasks = item.Tasks.Distinct();
+
+                foreach (var task in uniqueTasks)
+                {
+                    var currentTask = context.Tasks.FirstOrDefault(t => t.Id == task);
+
+                    if (currentTask == null)
+                    {
+                        sb.AppendLine(ErrorMessage);
+                        continue;
+                    }
+
+                    employee.EmployeesTasks.Add(new EmployeeTask
+                    {
+                        TaskId = task
+                    });
+                }
+
+                context.Employees.Add(employee);
+                context.SaveChanges();
+                sb.AppendLine(String.Format(SuccessfullyImportedEmployee, employee.Username, employee.EmployeesTasks.Count()));
+            }
+
+            return sb.ToString().TrimEnd();
         }
 
         private static bool IsValid(object dto)
