@@ -114,11 +114,10 @@ SELECT COUNT(*) AS [count]
 SELECT s.[Name],
 	   s.Manufacturer
 	FROM Spaceships s
-	LEFT JOIN Journeys j ON j.SpaceshipId = s.Id
-	LEFT JOIN TravelCards t ON t.JourneyId = j.Id
-	left JOIN Colonists c ON c.Id = t.ColonistId
-	WHERE 1989 < DATEPART(YEAR, c.BirthDate)
-	GROUP BY s.[Name], s.Manufacturer
+	JOIN Journeys j ON s.Id = j.SpaceshipId
+	JOIN TravelCards tc ON j.Id = tc.JourneyId
+	JOIN Colonists c ON tc.ColonistId = c.Id
+	WHERE JobDuringJourney = 'Pilot' AND DATEDIFF(YEAR, c.BirthDate, '01/01/2019') < 30
 	ORDER BY s.[Name] ASC
 
 --
