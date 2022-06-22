@@ -29,6 +29,8 @@ namespace SUHttpServer
             {
                 var connection = serverListener.AcceptTcpClient();
                 var networkStream = connection.GetStream();
+                var request = this.ReadRequest(networkStream);
+                Console.WriteLine(request);
                 WriteResponse(networkStream, "Hello from the server!");
                 connection.Close();
             }
@@ -46,6 +48,28 @@ Content-Length: {contentLength}
 
             var responseBytes = Encoding.UTF8.GetBytes(response);
             networkStream.Write(responseBytes);
+        }
+
+        private string ReadRequest(NetworkStream networkStream)
+        {
+            byte[] buffer = new byte[1024];
+            var requestBuilder = new StringBuilder();
+            int totalBytes = 0;
+
+            do
+            {
+                int bytesRead = networkStream.Read(buffer, totalBytes, 1024);
+                totalBytes += bytesRead;
+
+                if (totalBytes > 10 * 1024)
+                {
+                    throw new InvalidOperationException("Request it too large");
+                }
+
+                requestBuilder.Append(Encoding.UTF8.GetString(buffer, 0, bytesRead));
+            } while (networkStream.DataAvailable);
+
+            return requestBuilder.ToString();
         }
     }
 }
