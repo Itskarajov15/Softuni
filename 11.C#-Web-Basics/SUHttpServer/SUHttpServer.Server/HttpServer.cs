@@ -18,7 +18,7 @@ namespace SUHttpServer
             this.serverListener = new TcpListener(this.ipAddress, port);
         }
 
-        public void Start()
+        public async Task Start()
         {
             this.serverListener.Start();
 
@@ -27,16 +27,16 @@ namespace SUHttpServer
 
             while (true)
             {
-                var connection = serverListener.AcceptTcpClient();
+                var connection = await serverListener.AcceptTcpClientAsync();
                 var networkStream = connection.GetStream();
                 var request = this.ReadRequest(networkStream);
                 Console.WriteLine(request);
-                WriteResponse(networkStream, "Hello from the server!");
+                await WriteResponse(networkStream, "Hello from the server!");
                 connection.Close();
             }
         }
 
-        private static void WriteResponse(NetworkStream networkStream, string content)
+        private static async Task WriteResponse(NetworkStream networkStream, string content)
         {
             var contentLength = Encoding.UTF8.GetByteCount(content);
 
@@ -47,10 +47,10 @@ Content-Length: {contentLength}
 {content}";
 
             var responseBytes = Encoding.UTF8.GetBytes(response);
-            networkStream.Write(responseBytes);
+            await networkStream.WriteAsync(responseBytes);
         }
 
-        private string ReadRequest(NetworkStream networkStream)
+        private async Task<string> ReadRequest(NetworkStream networkStream)
         {
             byte[] buffer = new byte[1024];
             var requestBuilder = new StringBuilder();
@@ -58,7 +58,7 @@ Content-Length: {contentLength}
 
             do
             {
-                int bytesRead = networkStream.Read(buffer, totalBytes, 1024);
+                int bytesRead = await networkStream.ReadAsync (buffer, totalBytes, 1024);
                 totalBytes += bytesRead;
 
                 if (totalBytes > 10 * 1024)
