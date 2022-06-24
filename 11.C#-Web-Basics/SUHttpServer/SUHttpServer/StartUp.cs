@@ -1,16 +1,15 @@
-﻿using System.Net;
+﻿using SUHttpServer.Responses;
+using System.Net;
 
 namespace SUHttpServer
 {
     internal class StartUp
     {
-        static async Task Main(string[] args)
-        {
-            var ipAddress = "127.0.0.1";
-            var port = 8080;
-
-            var server = new HttpServer(ipAddress, port);
-            await server.Start();
-        }
+        static async Task Main()
+            => await new HttpServer(routes => routes
+                .MapGet("/", new TextResponse("Hello from the server!"))
+                .MapGet("/HTML", new HtmlResponse("<h1>HTML response</h1>"))
+                .MapGet("/Redirect", new RedirectResponse("https://softuni.org/")))
+            .Start();
     }
 }

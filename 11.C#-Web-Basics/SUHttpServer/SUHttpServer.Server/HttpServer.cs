@@ -1,4 +1,6 @@
-﻿using System.Net;
+﻿using SUHttpServer.HTTP;
+using SUHttpServer.Routing;
+using System.Net;
 using System.Net.Sockets;
 using System.Text;
 
@@ -10,12 +12,26 @@ namespace SUHttpServer
         private readonly int port;
         private readonly TcpListener serverListener;
 
-        public HttpServer(string ipAddress, int port)
+        private readonly RoutingTable routingTable;
+
+        public HttpServer(string ipAddress, int port, Action<IRoutingTable> routingTableConfiguration)
         {
             this.ipAddress = IPAddress.Parse(ipAddress);
             this.port = port;
 
             this.serverListener = new TcpListener(this.ipAddress, port);
+
+            routingTableConfiguration(this.routingTable = new RoutingTable());
+        }
+
+        public HttpServer(int port, Action<IRoutingTable> routingTable)
+            : this("127.0.0.1", port, routingTable)
+        {
+        }
+
+        public HttpServer(Action<IRoutingTable> routingTable)
+            : this(8080, routingTable)
+        {
         }
 
         public async Task Start()
@@ -29,24 +45,18 @@ namespace SUHttpServer
             {
                 var connection = await serverListener.AcceptTcpClientAsync();
                 var networkStream = connection.GetStream();
-                var request = this.ReadRequest(networkStream);
+                var requestText = await this.ReadRequest(networkStream);
+                var request = Request.Parse(requestText);
+                var response = this.routingTable.MatchRequest(request);
                 Console.WriteLine(request);
-                await WriteResponse(networkStream, "Hello from the server!");
+                await WriteResponse(networkStream, response);
                 connection.Close();
             }
         }
 
-        private static async Task WriteResponse(NetworkStream networkStream, string content)
+        private static async Task WriteResponse(NetworkStream networkStream, Response response)
         {
-            var contentLength = Encoding.UTF8.GetByteCount(content);
-
-            var response = $@"HTTP/1.1 200 OK
-Content-Type: text/plain; charset=UTF-8
-Content-Length: {contentLength}
-
-{content}";
-
-            var responseBytes = Encoding.UTF8.GetBytes(response);
+            var responseBytes = Encoding.UTF8.GetBytes(response.ToString());
             await networkStream.WriteAsync(responseBytes);
         }
 
