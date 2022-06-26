@@ -1,10 +1,10 @@
 ﻿using SUHttpServer.HTTP;
 
-namespace SUHttpServer.Responses
+namespace SUHttpServer.Server.Responses
 {
     public class RedirectResponse : Response
     {
-        public RedirectResponse(string location) 
+        public RedirectResponse(string location)
             : base(StatusCode.Found)
         {
             this.Headers.Add(Header.Location, location);

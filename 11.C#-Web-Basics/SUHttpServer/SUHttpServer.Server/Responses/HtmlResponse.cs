@@ -1,10 +1,10 @@
 ﻿using SUHttpServer.HTTP;
 
-namespace SUHttpServer.Responses
+namespace SUHttpServer.Server.Responses
 {
     public class HtmlResponse : ContentResponse
     {
-        public HtmlResponse(string text) 
+        public HtmlResponse(string text)
             : base(text, ContentType.Html)
         {
         }

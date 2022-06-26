@@ -1,10 +1,10 @@
 ﻿using SUHttpServer.HTTP;
 
-namespace SUHttpServer.Responses
+namespace SUHttpServer.Server.Responses
 {
     public class UnauthorizedResponse : Response
     {
-        public UnauthorizedResponse() 
+        public UnauthorizedResponse()
             : base(StatusCode.Unauthorized)
         {
         }

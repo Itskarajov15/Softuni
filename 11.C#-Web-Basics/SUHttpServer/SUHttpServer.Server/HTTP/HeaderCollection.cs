@@ -13,7 +13,9 @@ namespace SUHttpServer.HTTP
 
         public void Add(string name, string value)
         {
-            this.headers.Add(name, new Header(name, value));
+            var header = new Header(name, value);
+
+            this.headers.Add(name, header);
         }
 
         public IEnumerator<Header> GetEnumerator()

@@ -1,10 +1,10 @@
 ﻿using SUHttpServer.HTTP;
 
-namespace SUHttpServer.Responses
+namespace SUHttpServer.Server.Responses
 {
     public class NotFoundResponse : Response
     {
-        public NotFoundResponse() 
+        public NotFoundResponse()
             : base(StatusCode.NotFound)
         {
         }

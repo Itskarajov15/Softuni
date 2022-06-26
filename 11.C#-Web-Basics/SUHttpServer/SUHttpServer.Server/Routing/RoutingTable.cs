@@ -1,8 +1,8 @@
 ﻿using SUHttpServer.Common;
 using SUHttpServer.HTTP;
-using SUHttpServer.Responses;
+using SUHttpServer.Server.Responses;
 
-namespace SUHttpServer.Routing
+namespace SUHttpServer.Server.Routing
 {
     public class RoutingTable : IRoutingTable
     {
@@ -11,10 +11,10 @@ namespace SUHttpServer.Routing
         public RoutingTable() =>
             this.routes = new Dictionary<Method, Dictionary<string, Response>>()
             {
-                [Method.Get] = new (),
-                [Method.Post] = new (),
-                [Method.Put] = new (),
-                [Method.Delete] = new ()
+                [Method.Get] = new(),
+                [Method.Post] = new(),
+                [Method.Put] = new(),
+                [Method.Delete] = new()
             };
 
         public IRoutingTable Map(string url, Method method, Response response)

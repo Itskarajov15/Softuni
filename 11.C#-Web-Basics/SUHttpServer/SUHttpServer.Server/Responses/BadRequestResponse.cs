@@ -1,12 +1,13 @@
 ﻿using SUHttpServer.HTTP;
 
-namespace SUHttpServer.Responses
+namespace SUHttpServer.Server.Responses
 {
     public class BadRequestResponse : Response
     {
-        public BadRequestResponse() 
+        public BadRequestResponse()
             : base(StatusCode.BadRequest)
         {
+
         }
     }
 }
