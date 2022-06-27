@@ -6,9 +6,11 @@ namespace SUHttpServer.HTTP
     {
         public const string ContentType = "Content-Type";
         public const string ContentLength = "Content-Length";
+        public const string Cookie = "Cookie";
         public const string Date = "Date";
         public const string Location = "Location";
         public const string Server = "Server";
+        public const string SetCookie = "Set-Cookie";
 
         public Header(string name, string value)
         {
@@ -21,7 +23,7 @@ namespace SUHttpServer.HTTP
 
         public string Name { get; init; }
 
-        public string Value { get; set; }
+        public string Value { get; init; }
 
         public override string ToString()
             => $"{this.Name}: {this.Value}";

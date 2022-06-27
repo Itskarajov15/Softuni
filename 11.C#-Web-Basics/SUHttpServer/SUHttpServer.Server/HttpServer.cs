@@ -48,7 +48,7 @@ namespace SUHttpServer
                 var requestText = await this.ReadRequest(networkStream);
                 var request = Request.Parse(requestText);
                 var response = this.routingTable.MatchRequest(request);
-                Console.WriteLine(request);
+                Console.WriteLine(requestText);
                 await WriteResponse(networkStream, response);
                 connection.Close();
             }
