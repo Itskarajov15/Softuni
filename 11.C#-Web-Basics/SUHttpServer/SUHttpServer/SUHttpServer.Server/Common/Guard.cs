@@ -1,6 +1,6 @@
-﻿namespace SUHttpServer.Common
+﻿namespace SUHttpServer.Server.Common
 {
-    public static class Guard
+    public class Guard
     {
         public static void AgainstNull(object value, string name = null)
         {
@@ -8,7 +8,7 @@
             {
                 name ??= "Value";
 
-                throw new ArgumentException($"{name} cannot be null");
+                throw new ArgumentNullException($"{name} cannot be null");
             }
         }
     }
