@@ -1,6 +1,8 @@
-﻿namespace SUHttpServer.Server.HTTP
+﻿using System.Collections;
+
+namespace SUHttpServer.Server.HTTP
 {
-    public class HeaderCollection
+    public class HeaderCollection : IEnumerable<Header>
     {
         private readonly Dictionary<string, Header> headers;
 
@@ -13,5 +15,11 @@
         {
             this.headers.Add(name, new Header(name, value));
         }
+
+        public IEnumerator<Header> GetEnumerator()
+            => this.headers.Values.GetEnumerator();
+
+        IEnumerator IEnumerable.GetEnumerator()
+            => this.GetEnumerator();
     }
 }
