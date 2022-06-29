@@ -10,6 +10,8 @@ namespace SUHttpServer.Server.HTTP
 
         public HeaderCollection Headers { get; private set; }
 
+        public CookieCollection Cookies { get; private set; }
+
         public string Body { get; private set; }
 
         public IReadOnlyDictionary<string, string> Form { get; private set; }
@@ -24,6 +26,8 @@ namespace SUHttpServer.Server.HTTP
 
             var headers = ParseHeaders(lines.Skip(1));
 
+            var cookies = ParseCookies(headers);
+
             var bodyLines = lines.Skip(headers.Count + 2).ToArray();
 
             var body = string.Join("\r\n", bodyLines);
@@ -35,9 +39,34 @@ namespace SUHttpServer.Server.HTTP
                 Method = method,
                 Url = url,
                 Headers = headers,
+                Cookies = cookies,
                 Body = body,
                 Form = form
             };
+        }
+
+        private static CookieCollection ParseCookies(HeaderCollection headers)
+        {
+            var cookies = new CookieCollection();
+
+            if (headers.Contains(Header.Cookie))
+            {
+                var cookieHeader = headers[Header.Cookie];
+
+                var allCookies = cookieHeader.Split(";");
+
+                foreach (var cookieText in allCookies)
+                {
+                    var cookieParts = cookieText.Split("=");
+
+                    var cookieName = cookieParts[0].Trim();
+                    var cookieValue = cookieParts[1].Trim();
+
+                    cookies.Add(cookieName, cookieValue);
+                }
+            }
+
+            return cookies;
         }
 
         private static Dictionary<string, string> ParseForm(HeaderCollection headers, string body)
