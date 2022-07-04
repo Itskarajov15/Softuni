@@ -5,6 +5,7 @@ using System.Net.Sockets;
 using System.Threading.Tasks;
 using BasicWebServer.Server.HTTP;
 using BasicWebServer.Server.Routing;
+using System.Linq;
 
 namespace BasicWebServer.Server
 {
@@ -59,10 +60,6 @@ namespace BasicWebServer.Server
 
                     var response = this.routingTable.MatchRequest(request);
 
-                    // Execute pre-render action for the response
-                    if (response.PreRenderAction != null)
-                        response.PreRenderAction(request, response);
-
                     AddSession(request, response);
 
                     await WriteResponse(networkStream, response);
@@ -102,6 +99,13 @@ namespace BasicWebServer.Server
         private async Task WriteResponse(NetworkStream networkStream, Response response)
         {
             var resposeBytes = Encoding.UTF8.GetBytes(response.ToString());
+
+            if (response.FileContent != null)
+            {
+                resposeBytes = resposeBytes
+                    .Concat(response.FileContent)
+                    .ToArray();
+            }
 
             await networkStream.WriteAsync(resposeBytes);
         }
