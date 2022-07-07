@@ -1,10 +1,17 @@
-﻿using System.Collections.Generic;
+﻿using System;
+using System.Collections.Generic;
 using System.ComponentModel.DataAnnotations;
 
 namespace SharedTrip.Data.Models
 {
     public class User
     {
+        public User()
+        {
+            this.Id = Guid.NewGuid().ToString();
+            this.UserTrips = new List<UserTrip>();
+        }
+
         [Required]
         [StringLength(36)]
         public string Id { get; set; }
