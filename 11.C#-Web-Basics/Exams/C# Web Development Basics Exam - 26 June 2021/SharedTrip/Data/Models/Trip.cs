@@ -6,6 +6,12 @@ namespace SharedTrip.Data.Models
 {
     public class Trip
     {
+        public Trip()
+        {
+            this.Id = Guid.NewGuid().ToString();
+            this.UserTrips = new List<UserTrip>();
+        }
+
         [Required]
         [StringLength(36)]
         public string Id { get; set; }

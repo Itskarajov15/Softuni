@@ -22,10 +22,24 @@ namespace SharedTrip.Controllers
         }
 
         public Response Login()
-            => this.View();
+        {
+            if (User.IsAuthenticated)
+            {
+                return Redirect("/Trips/All");
+            }
+
+            return View();
+        }
 
         public Response Register()
-            => this.View();
+        {
+            if (User.IsAuthenticated)
+            {
+                return Redirect("/Trips/All");
+            }
+
+            return View();
+        }
 
         [HttpPost]
         public Response Register(RegisterViewModel model)
@@ -41,12 +55,44 @@ namespace SharedTrip.Controllers
             {
                 userService.RegisterUser(model);
             }
+            catch (ArgumentException aex)
+            {
+                return View(new List<ErrorViewModel>() { new ErrorViewModel(aex.Message) }, "/Error");
+            }
             catch (Exception)
             {
                 return View(new List<ErrorViewModel>() { new ErrorViewModel("Unexpected Error") }, "/Error");
             }
 
             return Redirect("/Users/Login");
+        }
+
+        [HttpPost]
+        public Response Login(LoginViewModel model)
+        {
+            Request.Session.Clear();
+
+            (string userId, bool isCorrect) = userService.IsLoginCorrect(model);
+
+            if (isCorrect)
+            {
+                SignIn(userId);
+
+                CookieCollection cookies = new CookieCollection();
+                cookies.Add(Session.SessionCookieName, Request.Session.Id);
+
+                return Redirect("/Trips/All");
+            }
+
+            return View(new List<ErrorViewModel>() { new ErrorViewModel("Login incorrect") }, "/Error");
+        }
+
+        [Authorize]
+        public Response Logout()
+        {
+            SignOut();
+
+            return Redirect("/");
         }
     }
 }

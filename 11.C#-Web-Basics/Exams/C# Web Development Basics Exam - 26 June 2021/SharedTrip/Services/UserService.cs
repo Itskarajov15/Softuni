@@ -5,6 +5,7 @@ using SharedTrip.Models;
 using SharedTrip.Models.Users;
 using System;
 using System.Collections.Generic;
+using System.Linq;
 using System.Security.Cryptography;
 using System.Text;
 
@@ -21,6 +22,13 @@ namespace SharedTrip.Services
 
         public void RegisterUser(RegisterViewModel model)
         {
+            var userExists = GetUserByUsername(model.Username) != null;
+
+            if (userExists)
+            {
+                throw new ArgumentException("Registration failed");
+            }
+
             User user = new User()
             {
                 Email = model.Email,
@@ -31,6 +39,11 @@ namespace SharedTrip.Services
 
             repo.Add(user);
             repo.SaveChanges();
+        }
+
+        private User GetUserByUsername(string username)
+        {
+            return repo.All<User>().FirstOrDefault(u => u.Username == username);
         }
 
         private string HashPassword(string password)
@@ -73,6 +86,26 @@ namespace SharedTrip.Services
             }
 
             return (isValid, errors);
+        }
+
+        public (string userId, bool isCorrect) IsLoginCorrect(LoginViewModel model)
+        {
+            bool isCorrect = false;
+            string userId = String.Empty;
+
+            var user = GetUserByUsername(model.Username);
+
+            if (user != null)
+            {
+                isCorrect = user.Password == HashPassword(model.Password);
+            }
+
+            if (isCorrect)
+            {
+                userId = user.Id;
+            }
+
+            return (userId, isCorrect);
         }
     }
 }
