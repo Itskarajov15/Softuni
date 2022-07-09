@@ -20,7 +20,8 @@
             server.ServiceCollection
                 .Add<IUserService, UserService>()
                 .Add<SMSDbContext>()
-                .Add<IRepository, Repository>();
+                .Add<IRepository, Repository>()
+                .Add<IValidationService, ValidationService>();
 
             await server.Start();
         }

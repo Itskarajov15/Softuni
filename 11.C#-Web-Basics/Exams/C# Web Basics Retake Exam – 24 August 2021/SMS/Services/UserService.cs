@@ -3,6 +3,8 @@ using SMS.Data.Common;
 using SMS.Data.Models;
 using SMS.Models;
 using System;
+using System.Collections.Generic;
+using System.ComponentModel.DataAnnotations;
 using System.Linq;
 using System.Security.Cryptography;
 using System.Text;
@@ -13,16 +15,19 @@ namespace SMS.Services
     {
         private readonly IRepository repo;
 
-        public UserService(IRepository repo)
+        private readonly IValidationService validationService;
+
+        public UserService(IRepository repo, IValidationService validationService)
         {
             this.repo = repo;
+            this.validationService = validationService;
         }
 
         public (bool registered, string error) Register(RegisterViewModel model)
         {
             bool registered = false;
             string error = null;
-            var (isValid, validationError) = ValidateRegisterModel(model);
+            var (isValid, validationError) = validationService.ValidateModel(model);
 
             if (!isValid)
             {
@@ -54,24 +59,14 @@ namespace SMS.Services
             return (registered, error);
         }
 
-        public (string userId, bool isCorrect) IsLoginCorrect(LoginViewModel model)
+        public string Login(LoginViewModel model)
         {
-            bool isCorrect = false;
-            string userId = String.Empty;
+            var user = repo.All<User>()
+                .Where(u => u.Username == model.Username)
+                .Where(u => u.Password == CalculateHash(model.Password))
+                .SingleOrDefault();
 
-            var user = GetUserByUsername(model.Username);
-
-            if (user != null)
-            {
-                isCorrect = user.Password == CalculateHash(model.Password);
-            }
-
-            if (isCorrect)
-            {
-                userId = user.Id;
-            }
-
-            return (userId, isCorrect);
+            return user?.Id;
         }
 
         private string CalculateHash(string password)
@@ -84,45 +79,12 @@ namespace SMS.Services
             }
         }
 
-        private (bool isValid, string error) ValidateRegisterModel(RegisterViewModel model)
-        {
-            bool isValid = true;
-            var error = new StringBuilder();
-
-            if (model == null)
-            {
-                return (false, "Register model is required");
-            }
-
-            if (string.IsNullOrWhiteSpace(model.Username) || model.Username.Length < 5 || model.Username.Length > 20)
-            {
-                isValid = false;
-                error.AppendLine("Username must be between 5 and 20 characters");
-            }
-
-            if (string.IsNullOrEmpty(model.Email))
-            {
-                isValid = false;
-                error.AppendLine("Email must be valid");
-            }
-
-            if (string.IsNullOrEmpty(model.Password) || model.Password.Length < 6 || model.Password.Length > 20)
-            {
-                isValid = false;
-                error.AppendLine("Password must be between 6 and 20 characters");
-            }
-
-            if (model.Password != model.ConfirmPassword)
-            {
-                isValid = false;
-                error.AppendLine("Password and ConfirmPassword do not match");
-            }
-
-            return (isValid, error.ToString().TrimEnd());
-        }
-
         private User GetUserByUsername(string username)
             => this.repo.All<User>()
                 .FirstOrDefault(u => u.Username == username);
+
+        public string GetUsername(string userId)
+            => this.repo.All<User>()
+                         .FirstOrDefault(u => u.Id == userId)?.Username;
     }
 }

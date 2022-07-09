@@ -53,17 +53,19 @@ namespace SMS.Controllers
         [HttpPost]
         public Response Login(LoginViewModel model)
         {
-            var (userId, isValid) = userService.IsLoginCorrect(model);
+            Request.Session.Clear();
+            var userId = userService.Login(model);
 
-            if (isValid)
+            if (userId == null)
             {
-                SignIn(userId);
-
-                CookieCollection cookies = new();
-                cookies.Add(Session.SessionCookieName, Request.Session.Id);
-
-                return Redirect("/");
+                return View(new { ErrorMessage = "Incorrect Login" }, "/Error");
             }
+
+            SignIn(userId);
+
+            CookieCollection cookies = new();
+            cookies.Add(Session.SessionCookieName, 
+                Request.Session.Id);
 
             return Redirect("/");
         }

@@ -6,6 +6,8 @@ namespace SMS.Contracts
     {
         (bool registered, string error) Register(RegisterViewModel model);
 
-        (string userId, bool isCorrect) IsLoginCorrect(LoginViewModel model)
+        string Login(LoginViewModel model);
+
+        string GetUsername(string userId);
     }
 }
