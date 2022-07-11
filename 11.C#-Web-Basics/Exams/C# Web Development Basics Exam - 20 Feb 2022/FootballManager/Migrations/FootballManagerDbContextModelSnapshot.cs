@@ -23,9 +23,12 @@ namespace FootballManager.Migrations
 
             modelBuilder.Entity("FootballManager.Data.Models.Player", b =>
                 {
-                    b.Property<string>("Id")
+                    b.Property<int>("Id")
+                        .ValueGeneratedOnAdd()
                         .HasMaxLength(36)
-                        .HasColumnType("nvarchar(36)");
+                        .HasColumnType("int");
+
+                    SqlServerPropertyBuilderExtensions.UseIdentityColumn(b.Property<int>("Id"), 1L, 1);
 
                     b.Property<string>("Description")
                         .IsRequired()
@@ -42,12 +45,12 @@ namespace FootballManager.Migrations
 
                     b.Property<string>("ImageUrl")
                         .IsRequired()
-                        .HasMaxLength(20)
-                        .HasColumnType("nvarchar(20)");
+                        .HasColumnType("nvarchar(max)");
 
                     b.Property<string>("Position")
                         .IsRequired()
-                        .HasColumnType("nvarchar(max)");
+                        .HasMaxLength(20)
+                        .HasColumnType("nvarchar(20)");
 
                     b.Property<byte>("Speed")
                         .HasColumnType("tinyint");
@@ -85,8 +88,8 @@ namespace FootballManager.Migrations
 
             modelBuilder.Entity("FootballManager.Data.Models.UserPlayer", b =>
                 {
-                    b.Property<string>("PlayerId")
-                        .HasColumnType("nvarchar(36)");
+                    b.Property<int>("PlayerId")
+                        .HasColumnType("int");
 
                     b.Property<string>("UserId")
                         .HasColumnType("nvarchar(36)");

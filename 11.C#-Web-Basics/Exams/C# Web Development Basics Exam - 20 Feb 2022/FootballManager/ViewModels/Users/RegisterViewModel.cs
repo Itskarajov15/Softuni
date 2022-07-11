@@ -1,6 +1,6 @@
 ﻿using System.ComponentModel.DataAnnotations;
 
-namespace FootballManager.ViewModels
+namespace FootballManager.ViewModels.Users
 {
     public class RegisterViewModel
     {

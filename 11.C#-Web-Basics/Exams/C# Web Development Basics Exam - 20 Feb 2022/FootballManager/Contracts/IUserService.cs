@@ -1,4 +1,4 @@
-﻿using FootballManager.ViewModels;
+﻿using FootballManager.ViewModels.Users;
 
 namespace FootballManager.Contracts
 {

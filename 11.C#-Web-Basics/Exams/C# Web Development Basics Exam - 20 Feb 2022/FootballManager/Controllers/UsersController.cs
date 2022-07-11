@@ -2,7 +2,7 @@
 using BasicWebServer.Server.Controllers;
 using BasicWebServer.Server.HTTP;
 using FootballManager.Contracts;
-using FootballManager.ViewModels;
+using FootballManager.ViewModels.Users;
 
 namespace FootballManager.Controllers
 {
@@ -67,6 +67,14 @@ namespace FootballManager.Controllers
             }
 
             return this.View(new { IsAuthenticated = false });
+        }
+
+        [Authorize]
+        public Response Logout()
+        {
+            SignOut();
+
+            return Redirect("/");
         }
     }
 }

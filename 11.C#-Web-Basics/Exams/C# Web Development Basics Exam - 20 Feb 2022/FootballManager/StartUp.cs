@@ -20,7 +20,8 @@
                 .Add<IUserService, UserService>()
                 .Add<FootballManagerDbContext>()
                 .Add<IRepository, Repository>()
-                .Add<IValidationService, ValidationService>();
+                .Add<IValidationService, ValidationService>()
+                .Add<IPlayerService, PlayerService>();
             await server.Start();
         }
     }

@@ -12,10 +12,11 @@ namespace FootballManager.Migrations
                 name: "Players",
                 columns: table => new
                 {
-                    Id = table.Column<string>(type: "nvarchar(36)", maxLength: 36, nullable: false),
+                    Id = table.Column<int>(type: "int", maxLength: 36, nullable: false)
+                        .Annotation("SqlServer:Identity", "1, 1"),
                     FullName = table.Column<string>(type: "nvarchar(80)", maxLength: 80, nullable: false),
-                    ImageUrl = table.Column<string>(type: "nvarchar(20)", maxLength: 20, nullable: false),
-                    Position = table.Column<string>(type: "nvarchar(max)", nullable: false),
+                    ImageUrl = table.Column<string>(type: "nvarchar(max)", nullable: false),
+                    Position = table.Column<string>(type: "nvarchar(20)", maxLength: 20, nullable: false),
                     Speed = table.Column<byte>(type: "tinyint", nullable: false),
                     Endurance = table.Column<byte>(type: "tinyint", nullable: false),
                     Description = table.Column<string>(type: "nvarchar(200)", maxLength: 200, nullable: false)
@@ -44,7 +45,7 @@ namespace FootballManager.Migrations
                 columns: table => new
                 {
                     UserId = table.Column<string>(type: "nvarchar(36)", nullable: false),
-                    PlayerId = table.Column<string>(type: "nvarchar(36)", nullable: false)
+                    PlayerId = table.Column<int>(type: "int", nullable: false)
                 },
                 constraints: table =>
                 {

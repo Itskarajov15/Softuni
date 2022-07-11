@@ -1,4 +1,4 @@
-﻿namespace FootballManager.ViewModels
+﻿namespace FootballManager.ViewModels.Users
 {
     public class LoginViewModel
     {

@@ -6,22 +6,21 @@ namespace FootballManager.Data.Models
     {
         public Player()
         {
-            this.Id = Guid.NewGuid().ToString();
             this.UserPlayers = new List<UserPlayer>();
         }
 
         [StringLength(36)]
-        public string Id { get; set; }
+        public int Id { get; set; }
 
         [Required]
         [StringLength(80, MinimumLength = 5)]
         public string FullName { get; set; }
 
         [Required]
-        [StringLength(20, MinimumLength = 5)]
         public string ImageUrl { get; set; }
 
         [Required]
+        [StringLength(20, MinimumLength = 5)]
         public string Position { get; set; }
 
         [Range(0, 10)]

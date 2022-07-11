@@ -1,7 +1,7 @@
 ﻿using FootballManager.Contracts;
 using FootballManager.Data.Common;
 using FootballManager.Data.Models;
-using FootballManager.ViewModels;
+using FootballManager.ViewModels.Users;
 using System.Security.Cryptography;
 using System.Text;
 
