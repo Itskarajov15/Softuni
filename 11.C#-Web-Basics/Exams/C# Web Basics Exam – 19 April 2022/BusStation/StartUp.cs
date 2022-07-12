@@ -19,7 +19,9 @@
             server.ServiceCollection
                   .Add<BusStationDbContext>()
                   .Add<IUserService, UserService>()
-                  .Add<IRepository, Repository>();
+                  .Add<IRepository, Repository>()
+                  .Add<IDestinationService, DestinationService>()
+                  .Add<ITicketService, TicketService>();
             await server.Start();
         }
     }

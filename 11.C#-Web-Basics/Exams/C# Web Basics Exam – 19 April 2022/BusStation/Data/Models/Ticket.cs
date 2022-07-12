@@ -9,7 +9,7 @@ namespace BusStation.Data.Models
         [Range(10, 90)]
         public decimal Price { get; set; }
 
-        public string UserId { get; set; }
+        public string? UserId { get; set; }
 
         public int DestinationId { get; set; }
     }
