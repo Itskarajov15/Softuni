@@ -3,7 +3,15 @@ Microsoft Visual Studio Solution File, Format Version 12.00
 # Visual Studio Version 17
 VisualStudioVersion = 17.3.32825.248
 MinimumVisualStudioVersion = 10.0.40219.1
-Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "01.DistanceBetweenVertices", "01.DistanceBetweenVertices\01.DistanceBetweenVertices.csproj", "{FD23CE79-4433-4FA1-B932-7FC149A09F7F}"
+Project("{9A19103F-16F7-4668-BE54-9A1E7A4F7556}") = "01.DistanceBetweenVertices", "01.DistanceBetweenVertices\01.DistanceBetweenVertices.csproj", "{FD23CE79-4433-4FA1-B932-7FC149A09F7F}"
+EndProject
+Project("{9A19103F-16F7-4668-BE54-9A1E7A4F7556}") = "02.AreasInMatrix", "02.AreasInMatrix\02.AreasInMatrix.csproj", "{1D9CD4BA-2F26-4AE0-BF84-794638605B4F}"
+EndProject
+Project("{9A19103F-16F7-4668-BE54-9A1E7A4F7556}") = "03.CyclesInGraph", "03.CyclesInGraph\03.CyclesInGraph.csproj", "{900E062D-E16D-403B-A43D-8BDC3E4E7977}"
+EndProject
+Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "04.Salaries", "04.Salaries\04.Salaries.csproj", "{A6A2BB15-E556-4D10-BF0F-5B943AE05983}"
+EndProject
+Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "05.BreakCycles", "05.BreakCycles\05.BreakCycles.csproj", "{3F7DCC13-9ECA-49F6-83FF-23669D0F9D68}"
 EndProject
 Global
 	GlobalSection(SolutionConfigurationPlatforms) = preSolution
@@ -15,6 +23,22 @@ Global
 		{FD23CE79-4433-4FA1-B932-7FC149A09F7F}.Debug|Any CPU.Build.0 = Debug|Any CPU
 		{FD23CE79-4433-4FA1-B932-7FC149A09F7F}.Release|Any CPU.ActiveCfg = Release|Any CPU
 		{FD23CE79-4433-4FA1-B932-7FC149A09F7F}.Release|Any CPU.Build.0 = Release|Any CPU
+		{1D9CD4BA-2F26-4AE0-BF84-794638605B4F}.Debug|Any CPU.ActiveCfg = Debug|Any CPU
+		{1D9CD4BA-2F26-4AE0-BF84-794638605B4F}.Debug|Any CPU.Build.0 = Debug|Any CPU
+		{1D9CD4BA-2F26-4AE0-BF84-794638605B4F}.Release|Any CPU.ActiveCfg = Release|Any CPU
+		{1D9CD4BA-2F26-4AE0-BF84-794638605B4F}.Release|Any CPU.Build.0 = Release|Any CPU
+		{900E062D-E16D-403B-A43D-8BDC3E4E7977}.Debug|Any CPU.ActiveCfg = Debug|Any CPU
+		{900E062D-E16D-403B-A43D-8BDC3E4E7977}.Debug|Any CPU.Build.0 = Debug|Any CPU
+		{900E062D-E16D-403B-A43D-8BDC3E4E7977}.Release|Any CPU.ActiveCfg = Release|Any CPU
+		{900E062D-E16D-403B-A43D-8BDC3E4E7977}.Release|Any CPU.Build.0 = Release|Any CPU
+		{A6A2BB15-E556-4D10-BF0F-5B943AE05983}.Debug|Any CPU.ActiveCfg = Debug|Any CPU
+		{A6A2BB15-E556-4D10-BF0F-5B943AE05983}.Debug|Any CPU.Build.0 = Debug|Any CPU
+		{A6A2BB15-E556-4D10-BF0F-5B943AE05983}.Release|Any CPU.ActiveCfg = Release|Any CPU
+		{A6A2BB15-E556-4D10-BF0F-5B943AE05983}.Release|Any CPU.Build.0 = Release|Any CPU
+		{3F7DCC13-9ECA-49F6-83FF-23669D0F9D68}.Debug|Any CPU.ActiveCfg = Debug|Any CPU
+		{3F7DCC13-9ECA-49F6-83FF-23669D0F9D68}.Debug|Any CPU.Build.0 = Debug|Any CPU
+		{3F7DCC13-9ECA-49F6-83FF-23669D0F9D68}.Release|Any CPU.ActiveCfg = Release|Any CPU
+		{3F7DCC13-9ECA-49F6-83FF-23669D0F9D68}.Release|Any CPU.Build.0 = Release|Any CPU
 	EndGlobalSection
 	GlobalSection(SolutionProperties) = preSolution
 		HideSolutionNode = FALSE
