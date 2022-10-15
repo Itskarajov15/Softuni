@@ -1,4 +1,5 @@
 ﻿using Microsoft.AspNetCore.Mvc;
+using Microsoft.Build.Framework;
 using System.Security.Claims;
 using TaskBoardApp.Data;
 using TaskBoardApp.Models.Tasks;
@@ -137,6 +138,54 @@ namespace TaskBoardApp.Controllers
             task.Description = taskModel.Description;
             task.BoardId = taskModel.BoardId;
 
+            this.data.SaveChanges();
+            return RedirectToAction("All", "Boards");
+        }
+
+        public IActionResult Delete(int id)
+        {
+            var task = this.data.Tasks.Find(id);
+
+            if (task == null)
+            {
+                return BadRequest();
+            }
+
+            var currentUserId = GetUserId();
+
+            if (currentUserId != task.OwnerId)
+            {
+                return Unauthorized();
+            }
+
+            var taskModel = new TaskViewModel()
+            {
+                Id = task.Id,
+                Title = task.Title,
+                Description = task.Description
+            };
+
+            return View(taskModel);
+        }
+
+        [HttpPost]
+        public IActionResult Delete(TaskViewModel taskModel)
+        {
+            var task = this.data.Tasks.Find(taskModel.Id);
+
+            if (task == null)
+            {
+                return BadRequest();
+            }
+
+            var currentUserId = GetUserId();
+
+            if (currentUserId != task.OwnerId)
+            {
+                return Unauthorized();
+            }
+
+            this.data.Tasks.Remove(task);
             this.data.SaveChanges();
             return RedirectToAction("All", "Boards");
         }
