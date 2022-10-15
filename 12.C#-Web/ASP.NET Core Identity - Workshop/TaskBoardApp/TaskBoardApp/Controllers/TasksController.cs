@@ -84,6 +84,63 @@ namespace TaskBoardApp.Controllers
             return View(task);
         }
 
+        public IActionResult Edit(int id)
+        {
+            var task = this.data.Tasks.Find(id);
+
+            if (task == null)
+            {
+                return BadRequest();
+            }
+
+            var currentUserId = GetUserId();
+
+            if (currentUserId != task.OwnerId)
+            {
+                return Unauthorized();
+            }
+
+            var taskModel = new TaskFormViewModel()
+            {
+                Title = task.Title,
+                Description = task.Description,
+                BoardId = task.BoardId,
+                Boards = GetBoards()
+            };
+
+            return View(taskModel);
+        }
+
+        [HttpPost]
+        public IActionResult Edit(int id, TaskFormViewModel taskModel)
+        {
+            var task = this.data.Tasks.Find(id);
+
+            if (task == null)
+            {
+                return BadRequest();
+            }
+
+            var currentUserId = GetUserId();
+
+            if (currentUserId != task.OwnerId)
+            {
+                return Unauthorized();
+            }
+
+            if (!GetBoards().Any(b => b.Id == taskModel.BoardId))
+            {
+                this.ModelState.AddModelError(nameof(taskModel.BoardId), "Board does not exist");
+            }
+
+            task.Title = taskModel.Title;
+            task.Description = taskModel.Description;
+            task.BoardId = taskModel.BoardId;
+
+            this.data.SaveChanges();
+            return RedirectToAction("All", "Boards");
+        }
+
         private string GetUserId()
             => this.User.FindFirstValue(ClaimTypes.NameIdentifier);
     }
