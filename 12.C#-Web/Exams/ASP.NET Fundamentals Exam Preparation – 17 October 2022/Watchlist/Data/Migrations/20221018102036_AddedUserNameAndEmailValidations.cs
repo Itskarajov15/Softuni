@@ -4,7 +4,7 @@
 
 namespace Watchlist.Data.Migrations
 {
-    public partial class UserNameAndEmailSetToNotNullable : Migration
+    public partial class AddedUserNameAndEmailValidations : Migration
     {
         protected override void Up(MigrationBuilder migrationBuilder)
         {

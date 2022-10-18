@@ -1,30 +1,26 @@
 ﻿using System.ComponentModel.DataAnnotations;
-using System.ComponentModel.DataAnnotations.Schema;
+using Watchlist.Data.Entities;
 
-namespace Watchlist.Data.Models
+namespace Watchlist.Models
 {
-    public class Movie
+    public class AddMovieViewModel
     {
-        public int Id { get; set; }
-
         [Required]
-        [StringLength(50)]
+        [StringLength(50, MinimumLength = 10)]
         public string Title { get; set; } = null!;
 
         [Required]
-        [StringLength(50)]
+        [StringLength(50, MinimumLength = 5)]
         public string Director { get; set; } = null!;
 
         [Required]
         public string ImageUrl { get; set; } = null!;
 
+        [Range(typeof(decimal), "0.0", "10.0", ConvertValueInInvariantCulture = true)]
         public decimal Rating { get; set; }
 
         public int GenreId { get; set; }
 
-        [ForeignKey(nameof(GenreId))]
-        public Genre? Genre { get; set; }
-
-        public List<UserMovie> UsersMovies { get; set; } = new List<UserMovie>();
+        public IEnumerable<Genre> Genres { get; set; } = new List<Genre>();
     }
 }

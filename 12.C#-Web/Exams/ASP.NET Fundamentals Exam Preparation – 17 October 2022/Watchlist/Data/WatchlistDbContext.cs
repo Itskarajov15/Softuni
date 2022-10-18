@@ -1,6 +1,6 @@
 ﻿using Microsoft.AspNetCore.Identity.EntityFrameworkCore;
 using Microsoft.EntityFrameworkCore;
-using Watchlist.Data.Models;
+using Watchlist.Data.Entities;
 
 namespace Watchlist.Data
 {
@@ -23,12 +23,12 @@ namespace Watchlist.Data
             builder.Entity<User>()
                 .Property(x => x.UserName)
                 .HasMaxLength(20)
-                .IsRequired(true);
+                .IsRequired();
 
             builder.Entity<User>()
                 .Property(x => x.Email)
                 .HasMaxLength(60)
-                .IsRequired(true);
+                .IsRequired();
 
             builder
                 .Entity<Genre>()
@@ -57,7 +57,6 @@ namespace Watchlist.Data
                     Id = 5,
                     Name = "Romantic"
                 });
-
 
             base.OnModelCreating(builder);
         }

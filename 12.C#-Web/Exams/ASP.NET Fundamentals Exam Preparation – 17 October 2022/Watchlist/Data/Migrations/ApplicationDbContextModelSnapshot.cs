@@ -159,7 +159,7 @@ namespace Watchlist.Data.Migrations
                     b.ToTable("AspNetUserTokens", (string)null);
                 });
 
-            modelBuilder.Entity("Watchlist.Data.Models.Genre", b =>
+            modelBuilder.Entity("Watchlist.Data.Entities.Genre", b =>
                 {
                     b.Property<int>("Id")
                         .ValueGeneratedOnAdd()
@@ -204,7 +204,7 @@ namespace Watchlist.Data.Migrations
                         });
                 });
 
-            modelBuilder.Entity("Watchlist.Data.Models.Movie", b =>
+            modelBuilder.Entity("Watchlist.Data.Entities.Movie", b =>
                 {
                     b.Property<int>("Id")
                         .ValueGeneratedOnAdd()
@@ -239,7 +239,7 @@ namespace Watchlist.Data.Migrations
                     b.ToTable("Movies");
                 });
 
-            modelBuilder.Entity("Watchlist.Data.Models.User", b =>
+            modelBuilder.Entity("Watchlist.Data.Entities.User", b =>
                 {
                     b.Property<string>("Id")
                         .HasColumnType("nvarchar(450)");
@@ -306,7 +306,7 @@ namespace Watchlist.Data.Migrations
                     b.ToTable("AspNetUsers", (string)null);
                 });
 
-            modelBuilder.Entity("Watchlist.Data.Models.UserMovie", b =>
+            modelBuilder.Entity("Watchlist.Data.Entities.UserMovie", b =>
                 {
                     b.Property<string>("UserId")
                         .HasColumnType("nvarchar(450)");
@@ -332,7 +332,7 @@ namespace Watchlist.Data.Migrations
 
             modelBuilder.Entity("Microsoft.AspNetCore.Identity.IdentityUserClaim<string>", b =>
                 {
-                    b.HasOne("Watchlist.Data.Models.User", null)
+                    b.HasOne("Watchlist.Data.Entities.User", null)
                         .WithMany()
                         .HasForeignKey("UserId")
                         .OnDelete(DeleteBehavior.Cascade)
@@ -341,7 +341,7 @@ namespace Watchlist.Data.Migrations
 
             modelBuilder.Entity("Microsoft.AspNetCore.Identity.IdentityUserLogin<string>", b =>
                 {
-                    b.HasOne("Watchlist.Data.Models.User", null)
+                    b.HasOne("Watchlist.Data.Entities.User", null)
                         .WithMany()
                         .HasForeignKey("UserId")
                         .OnDelete(DeleteBehavior.Cascade)
@@ -356,7 +356,7 @@ namespace Watchlist.Data.Migrations
                         .OnDelete(DeleteBehavior.Cascade)
                         .IsRequired();
 
-                    b.HasOne("Watchlist.Data.Models.User", null)
+                    b.HasOne("Watchlist.Data.Entities.User", null)
                         .WithMany()
                         .HasForeignKey("UserId")
                         .OnDelete(DeleteBehavior.Cascade)
@@ -365,16 +365,16 @@ namespace Watchlist.Data.Migrations
 
             modelBuilder.Entity("Microsoft.AspNetCore.Identity.IdentityUserToken<string>", b =>
                 {
-                    b.HasOne("Watchlist.Data.Models.User", null)
+                    b.HasOne("Watchlist.Data.Entities.User", null)
                         .WithMany()
                         .HasForeignKey("UserId")
                         .OnDelete(DeleteBehavior.Cascade)
                         .IsRequired();
                 });
 
-            modelBuilder.Entity("Watchlist.Data.Models.Movie", b =>
+            modelBuilder.Entity("Watchlist.Data.Entities.Movie", b =>
                 {
-                    b.HasOne("Watchlist.Data.Models.Genre", "Genre")
+                    b.HasOne("Watchlist.Data.Entities.Genre", "Genre")
                         .WithMany()
                         .HasForeignKey("GenreId")
                         .OnDelete(DeleteBehavior.Cascade)
@@ -383,15 +383,15 @@ namespace Watchlist.Data.Migrations
                     b.Navigation("Genre");
                 });
 
-            modelBuilder.Entity("Watchlist.Data.Models.UserMovie", b =>
+            modelBuilder.Entity("Watchlist.Data.Entities.UserMovie", b =>
                 {
-                    b.HasOne("Watchlist.Data.Models.Movie", "Movie")
+                    b.HasOne("Watchlist.Data.Entities.Movie", "Movie")
                         .WithMany("UsersMovies")
                         .HasForeignKey("MovieId")
                         .OnDelete(DeleteBehavior.Cascade)
                         .IsRequired();
 
-                    b.HasOne("Watchlist.Data.Models.User", "User")
+                    b.HasOne("Watchlist.Data.Entities.User", "User")
                         .WithMany("UsersMovies")
                         .HasForeignKey("UserId")
                         .OnDelete(DeleteBehavior.Cascade)
@@ -402,12 +402,12 @@ namespace Watchlist.Data.Migrations
                     b.Navigation("User");
                 });
 
-            modelBuilder.Entity("Watchlist.Data.Models.Movie", b =>
+            modelBuilder.Entity("Watchlist.Data.Entities.Movie", b =>
                 {
                     b.Navigation("UsersMovies");
                 });
 
-            modelBuilder.Entity("Watchlist.Data.Models.User", b =>
+            modelBuilder.Entity("Watchlist.Data.Entities.User", b =>
                 {
                     b.Navigation("UsersMovies");
                 });

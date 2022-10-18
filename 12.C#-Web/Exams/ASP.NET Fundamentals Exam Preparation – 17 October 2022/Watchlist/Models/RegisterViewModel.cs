@@ -10,7 +10,6 @@ namespace Watchlist.Models
 
         [Required]
         [EmailAddress]
-        [StringLength(60, MinimumLength = 10)]
         public string Email { get; set; } = null!;
 
         [Required]
@@ -20,6 +19,7 @@ namespace Watchlist.Models
         public string Password { get; set; } = null!;
 
         [Required]
+        [DataType(DataType.Password)]
         public string ConfirmPassword { get; set; } = null!;
     }
 }

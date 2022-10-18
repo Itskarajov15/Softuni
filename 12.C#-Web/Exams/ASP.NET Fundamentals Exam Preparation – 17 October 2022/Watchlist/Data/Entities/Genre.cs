@@ -1,6 +1,6 @@
 ﻿using System.ComponentModel.DataAnnotations;
 
-namespace Watchlist.Data.Models
+namespace Watchlist.Data.Entities
 {
     public class Genre
     {
